@@ -11,19 +11,21 @@ const formData = {
 function App() {
 	return (
 		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-			<main className="flex flex-col w-full">
-				<div className="flex justify-between border-b-2 p-4 gap-3 items-center">
-					<h2 className="truncate font-medium">
-						<span className="text-muted-foreground mr-2">Form:</span>
-						{formData.name}
-					</h2>
-					<div className="flex items-center gap-2">
-						<ThemeSwitcher />
-						<PreviewDialogBtn />
+			<div className="h-screen flex flex-col">
+				<nav className="flex flex-col w-full">
+					<div className="flex justify-between border-b-2 dark:border-grey-500 p-4 gap-3 items-center">
+						<h2 className="truncate font-medium">
+							<span className="text-muted-foreground mr-2">Form:</span>
+							{formData.name}
+						</h2>
+						<div className="flex items-center gap-4">
+							<ThemeSwitcher />
+							<PreviewDialogBtn />
+						</div>
 					</div>
-				</div>
-			</main>
-			<FormBuilder />
+				</nav>
+				<FormBuilder />
+			</div>
 		</ThemeProvider>
 	)
 }
