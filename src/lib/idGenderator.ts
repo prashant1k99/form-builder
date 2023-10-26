@@ -1,3 +1,3 @@
-export default function idGenerator():string {
-  return Math.floor(Math.random() * 10001).toString()
+export default function idGenerator(type: string):string {
+  return type + '-' + Math.floor(Math.random() * 10001).toString()
 }

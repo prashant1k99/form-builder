@@ -7,7 +7,8 @@ export type ElementsType = 'TextField'
 export type FormElementInstance = {
 	id: string
 	type: ElementsType
-	extraAttributes?: Record<string, unknown>
+	/* trunk-ignore(eslint/@typescript-eslint/no-explicit-any) */
+	extraAttributes?: Record<string, any>
 }
 
 export type FormElement = {
@@ -20,9 +21,13 @@ export type FormElement = {
 		label: string
 	}
 
-	designerComponent: React.FC
+	designerComponent: React.FC<{
+		elementInstance: FormElementInstance
+	}>
 	formComponent: React.FC
-	propertiesComponent: React.FC
+	propertiesComponent: React.FC<{
+		elementInstance: FormElementInstance
+	}>
 }
 
 type FormElementsType = {
