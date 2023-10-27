@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import ThemeSwitcher from './ThemeSwitcher'
+import { UserNav } from './UserNav'
 
 function NavBar() {
 	return (
@@ -14,6 +15,7 @@ function NavBar() {
 				</div>
 				<div className="flex items-center gap-4">
 					<ThemeSwitcher />
+					<UserNav />
 				</div>
 			</div>
 		</nav>

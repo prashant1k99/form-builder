@@ -9,30 +9,33 @@ import Protected from '@/components/Auth/Protected'
 import Login from '@/components/Auth/Login'
 import { Toaster } from '@/components/ui/toaster'
 import NoAuth from './components/Auth/NoAuth'
+import AuthProvider from './lib/auth-provider'
 
 function App() {
 	return (
 		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-			<Layout>
-				<Routes>
-					<Route path="/" element={<Protected />}>
-						<Route path="/" element={<Dashboard />} />
-						<Route path="/builder/:id" element={<Builder />} />
-						<Route path="/data/:id" element={<Builder />} />
-					</Route>
-					<Route
-						path="login"
-						element={
-							<NoAuth>
-								<Login />
-							</NoAuth>
-						}
-					/>
-					<Route path="/:id" element={<Builder />} />
-					<Route path="*" element={<NotFound />} />
-				</Routes>
-				<Toaster />
-			</Layout>
+			<AuthProvider>
+				<Layout>
+					<Routes>
+						<Route path="/" element={<Protected />}>
+							<Route path="/" element={<Dashboard />} />
+							<Route path="/builder/:id" element={<Builder />} />
+							<Route path="/data/:id" element={<Builder />} />
+						</Route>
+						<Route
+							path="login"
+							element={
+								<NoAuth>
+									<Login />
+								</NoAuth>
+							}
+						/>
+						<Route path="/:id" element={<Builder />} />
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+					<Toaster />
+				</Layout>
+			</AuthProvider>
 		</ThemeProvider>
 	)
 }
