@@ -8,7 +8,7 @@ function NavBar() {
 				<div className="flex flex-row items-center">
 					<Link
 						to={'/'}
-						className="text-3xl bg-gradient-to-r from-blue-600 to-cyan-400 text-transparent bg-clip-text hover:cursor-pointer">
+						className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-400 text-transparent bg-clip-text hover:cursor-pointer">
 						CF!
 					</Link>
 				</div>
