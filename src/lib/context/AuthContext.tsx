@@ -64,7 +64,7 @@ export default function AuthProvider({
 			await signOutFirebase(auth)
 			localStorage.removeItem('token')
 			setToken(null)
-			navigate('/login')
+			navigate('/auth')
 		} catch (error) {
 			toast({
 				variant: 'destructive',

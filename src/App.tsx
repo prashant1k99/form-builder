@@ -10,6 +10,7 @@ import Login from '@/components/Auth/Login'
 import { Toaster } from '@/components/ui/toaster'
 import NoAuth from './components/Auth/NoAuth'
 import AuthProvider from './lib/context/AuthContext'
+import Form from '@/pages/Form'
 
 function App() {
 	return (
@@ -23,14 +24,14 @@ function App() {
 							<Route path="/data/:id" element={<Builder />} />
 						</Route>
 						<Route
-							path="login"
+							path="/auth"
 							element={
 								<NoAuth>
 									<Login />
 								</NoAuth>
 							}
 						/>
-						<Route path="/:id" element={<Builder />} />
+						<Route path="/:id" element={<Form />} />
 						<Route path="*" element={<NotFound />} />
 					</Routes>
 					<Toaster />
