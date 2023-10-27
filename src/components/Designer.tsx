@@ -31,7 +31,7 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
 		data: {
 			type: element.type,
 			elementId: element.id,
-			isTopHalfDesignerElement: true,
+			isBottomHalfDesignerElement: true,
 		},
 	})
 
@@ -103,31 +103,101 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
 }
 
 function Designer() {
-	const { elements, addElement, selectedElement, setSelectedElement } =
-		useDesigner()
+	const {
+		elements,
+		addElement,
+		selectedElement,
+		setSelectedElement,
+		removeElement,
+	} = useDesigner()
 
 	const droppable = useDroppable({
 		id: 'designer-drop-area',
 		data: {
-			isDesignDropArea: true,
+			isDesignerDropArea: true,
 		},
 	})
 
 	useDndMonitor({
 		onDragEnd: (event: DragEndEvent) => {
-			console.log('DRAG END', event)
 			const { active, over } = event
 			if (!active || !over) return
 
 			if (!active?.data?.current) return
 
 			const isDesignerBtnElement = active?.data?.current.isDesignerBtnElement
+			const isDroppingOverDesignerDropArea = over?.data?.current
+				?.isDesignerDropArea as boolean
 
-			if (isDesignerBtnElement) {
+			// First Case: Dropping a sidebar button over the designer drop area
+
+			const droppingSidebarBtnOverDropArea =
+				isDesignerBtnElement && isDroppingOverDesignerDropArea
+			if (droppingSidebarBtnOverDropArea) {
 				const type = active.data.current.type as ElementsType
 				const newElement = FormElements[type].construct(idGenerator(type))
 
 				addElement(elements.length, newElement)
+			}
+
+			// Second Case: Dropping a designer element over a designer element
+
+			const isDroppingOverDesignerElementTop = over?.data?.current
+				?.isTopHalfDesignerElement as boolean
+			const isDroppingOverDesignerElementBottom = over?.data?.current
+				?.isBottomHalfDesignerElement as boolean
+
+			const isDroppingOverDesignerElementTopOrBottom =
+				isDroppingOverDesignerElementTop || isDroppingOverDesignerElementBottom
+
+			const droppingSidebarBtnOverDesignerElement =
+				isDesignerBtnElement && isDroppingOverDesignerElementTopOrBottom
+
+			if (droppingSidebarBtnOverDesignerElement) {
+				const type = active.data.current.type as ElementsType
+				const newElement = FormElements[type].construct(idGenerator(type))
+
+				const overId = over.data?.current?.elementId as string
+
+				const overElementIndex = elements.findIndex((el) => el.id == overId)
+				if (overElementIndex == -1) {
+					console.error('overElementIndex not found')
+					return
+				}
+
+				let indexForNewElement = overElementIndex
+				if (isDroppingOverDesignerElementBottom)
+					indexForNewElement = overElementIndex + 1
+
+				addElement(indexForNewElement, newElement)
+			}
+
+			// Third Case: Sorting elements by dropping other elements over them
+			const isDraggingDesignerElement = active?.data?.current
+				.isDesignerElement as boolean
+			const draggingDesignerElementOverDesignerElement =
+				isDroppingOverDesignerElementTopOrBottom && isDraggingDesignerElement
+
+			if (draggingDesignerElementOverDesignerElement) {
+				const activeId = active.data?.current?.elementId as string
+				const overId = over.data?.current?.elementId as string
+
+				const activeElementIndex = elements.findIndex((el) => el.id == activeId)
+				const overElementIndex = elements.findIndex((el) => el.id == overId)
+
+				if (activeElementIndex == -1 || overElementIndex == -1) {
+					console.error('activeElementIndex or overElementIndex not found')
+					return
+				}
+
+				const activeElement = { ...elements[activeElementIndex] }
+				removeElement(activeId)
+
+				let indexForNewElement = overElementIndex
+				if (isDroppingOverDesignerElementBottom)
+					indexForNewElement = overElementIndex + 1
+
+				addElement(indexForNewElement, activeElement)
 			}
 		},
 	})

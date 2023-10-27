@@ -3,7 +3,7 @@ import { ElementsType, FormElement, FormElementInstance } from '../FormElements'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import z from 'zod'
-import { useForm } from 'react-hook-form'
+import { ControllerRenderProps, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import useDesigner from '../hooks/useDesigner'
@@ -133,7 +133,15 @@ function PropertiesComponent({
 			label: 'Label',
 			description:
 				'The label of the text field. It will be displayed above field.',
-			input: (field) => <Input {...field} placeholder="Label" />,
+			input: (field: ControllerRenderProps) => (
+				<Input
+					{...field}
+					placeholder="Label"
+					onKeyDown={(e) => {
+						if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
+					}}
+				/>
+			),
 			name: 'label',
 		},
 		{
@@ -150,7 +158,10 @@ function PropertiesComponent({
 
 	return (
 		<Form {...form}>
-			<form onBlur={form.handleSubmit(applyChanges)} className="space-y-3">
+			<form
+				onBlur={form.handleSubmit(applyChanges)}
+				className="space-y-3"
+				onSubmit={(e) => e.preventDefault()}>
 				{Properties.map((property) => {
 					return (
 						<FormField
@@ -162,9 +173,16 @@ function PropertiesComponent({
 									<FormLabel>{property.label}</FormLabel>
 									<FormControl>
 										{property.input ? (
-											property.input(field)
+											property.input({ ...field, name: property.name })
 										) : (
-											<Input {...field} placeholder={property.label} />
+											<Input
+												{...field}
+												placeholder={property.label}
+												onKeyDown={(e) => {
+													if (e.key == 'Enter')
+														(e.target as HTMLInputElement).blur()
+												}}
+											/>
 										)}
 									</FormControl>
 									<FormDescription>{property.description}</FormDescription>
