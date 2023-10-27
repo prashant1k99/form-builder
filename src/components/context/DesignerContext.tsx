@@ -6,6 +6,8 @@ type DesignerContextType = {
 	addElement: (index: number, element: FormElementInstance) => void
 	removeElement: (id: string) => void
 
+	// Set Element, for edit form action
+
 	selectedElement: FormElementInstance | null
 	setSelectedElement: Dispatch<SetStateAction<FormElementInstance | null>>
 	updateElement: (id: string, element: FormElementInstance) => void
@@ -23,7 +25,6 @@ export default function DesignerContextProvider({
 		useState<FormElementInstance | null>(null)
 
 	const addElement = (index: number, element: FormElementInstance) => {
-		// console.log(index, element)
 		setElements((prev) => {
 			const newElements = [...prev]
 			newElements.splice(index, 0, element)

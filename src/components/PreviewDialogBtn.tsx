@@ -10,7 +10,7 @@ function PreviewDialogBtn() {
 		<>
 			<Dialog>
 				<DialogTrigger asChild>
-					<Button>
+					<Button disabled={elements.length > 0}>
 						<MdPreview className="h-6 w-6 mr-2" />
 						Preview
 					</Button>
