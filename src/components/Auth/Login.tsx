@@ -1,6 +1,6 @@
 import { FcGoogle } from 'react-icons/fc'
 import { Button } from '../ui/button'
-import useAuth from '@/components/hooks/useAuth'
+import useAuth from '@/hooks/useAuth'
 
 function Login() {
 	const { signInWithGoogle } = useAuth()

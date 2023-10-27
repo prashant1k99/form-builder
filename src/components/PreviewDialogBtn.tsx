@@ -1,4 +1,4 @@
-import useDesigner from './hooks/useDesigner'
+import useDesigner from '@/hooks/useDesigner'
 import { Button } from './ui/button'
 import { MdPreview } from 'react-icons/md'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'

@@ -9,7 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LiaSignOutAltSolid } from 'react-icons/lia'
-import useAuth from '@/components/hooks/useAuth'
+import useAuth from '@/hooks/useAuth'
 
 export function UserNav() {
 	const { user, signOut } = useAuth()

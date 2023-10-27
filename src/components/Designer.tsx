@@ -7,7 +7,7 @@ import {
 } from '@dnd-kit/core'
 import DesignerSidebar from './DesignerSidebar'
 import { cn } from '@/lib/utils'
-import useDesigner from './hooks/useDesigner'
+import useDesigner from '@/hooks/useDesigner'
 import { ElementsType, FormElementInstance, FormElements } from './FormElements'
 import idGenerator from '@/lib/idGenderator'
 import { Button } from './ui/button'
