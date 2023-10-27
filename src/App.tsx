@@ -3,7 +3,8 @@ import './App.css'
 import Dashboard from '@/pages/dashboard'
 import Builder from '@/pages/Builder'
 import { ThemeProvider } from '@/lib/theme-provider'
-import Layout from './components/Layout'
+import Layout from '@/components/Layout'
+import NotFound from '@/pages/NotFound'
 
 function App() {
 	return (
@@ -14,7 +15,7 @@ function App() {
 					<Route path="/builder/:id" element={<Builder />} />
 					<Route path="/data/:id" element={<Builder />} />
 					<Route path="/:id" element={<Builder />} />
-					<Route path="*" element={<h1>Page Not Found</h1>} />
+					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</Layout>
 		</ThemeProvider>

@@ -203,7 +203,7 @@ function Designer() {
 	})
 
 	return (
-		<div className="flex w-full h-full">
+		<div className="flex flex-col sm:flex-row w-full h-full">
 			<div
 				className="p-4 w-full"
 				onClick={(e) => {

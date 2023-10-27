@@ -1,7 +1,6 @@
 import FormBuilder from '@/components/FormBuilder'
 
 import PreviewDialogBtn from '@/components/PreviewDialogBtn'
-import ThemeSwitcher from '@/components/ThemeSwitcher'
 import {
 	DndContext,
 	MouseSensor,
@@ -44,19 +43,12 @@ function App() {
 			<DndContext sensors={sensors}>
 				<nav className="flex flex-col w-full">
 					<div className="flex justify-between border-b-2 dark:border-grey-500 p-4 gap-3 items-center">
-						<div className="flex flex-row items-center">
-							<Link to={'/'}>
-								<Button variant={'link'}>
-									<MdKeyboardBackspace className="h-6 w-6 text-muted-foreground" />
-								</Button>
-							</Link>
-							<h2 className="truncate font-medium">
-								<span className="text-muted-foreground mr-2">Form:</span>
-								{formData.name}
-							</h2>
-						</div>
+						<h2 className="truncate font-medium">
+							<span className="text-muted-foreground mr-2">Form:</span>
+							{formData.name}
+						</h2>
 						<div className="flex items-center gap-4">
-							<ThemeSwitcher />
+							{/* <ThemeSwitcher /> */}
 							<PreviewDialogBtn />
 						</div>
 					</div>
