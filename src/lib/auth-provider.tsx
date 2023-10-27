@@ -12,7 +12,6 @@ import { ToastAction } from '@/components/ui/toast'
 import { useNavigate } from 'react-router-dom'
 
 type AuthProviderState = {
-	authState: 'authenticated' | 'unauthenticated' | 'loading'
 	token: string | null
 	setToken: (token: string | null) => void
 	user: User
@@ -22,7 +21,6 @@ type AuthProviderState = {
 }
 
 const initialState: AuthProviderState = {
-	authState: 'unauthenticated',
 	token: null,
 	setToken: () => null,
 	user: {} as User,
@@ -42,39 +40,32 @@ export default function AuthProvider({
 }) {
 	const [token, setToken] = useState<string | null>(null)
 	const [user, setUser] = useState<User>({} as User)
-	const [authState, setAuthState] =
-		useState<AuthProviderState['authState']>('loading')
 
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				localStorage.setItem('user', JSON.stringify(user))
+				setUser(user)
+			} else {
+				localStorage.removeItem('user')
+				setUser({} as User)
+			}
+		})
 		const token = localStorage.getItem('token')
 		const user = JSON.parse(localStorage.getItem('user') || '{}')
 		setToken(token)
 		setUser(user)
-		if (token) setAuthState('authenticated')
 	}, [])
-
-	onAuthStateChanged(auth, (user) => {
-		if (user) {
-			localStorage.setItem('user', JSON.stringify(user))
-			setUser(user)
-		} else {
-			localStorage.removeItem('user')
-			setUser({} as User)
-		}
-	})
 
 	const signOut = async () => {
 		try {
-			setAuthState('loading')
 			await signOutFirebase(auth)
 			localStorage.removeItem('token')
 			setToken(null)
-			setAuthState('unauthenticated')
 			navigate('/login')
 		} catch (error) {
-			setAuthState('authenticated')
 			toast({
 				variant: 'destructive',
 				title: 'Uh oh! Something went wrong.',
@@ -96,17 +87,13 @@ export default function AuthProvider({
 
 	const signInWithGoogle = async () => {
 		try {
-			setAuthState('loading')
 			const provider = new GoogleAuthProvider()
 			const result = await signInWithPopup(auth, provider)
 			const credential = GoogleAuthProvider.credentialFromResult(result)
 			const token = credential?.accessToken
 			localStorage.setItem('token', token || '')
-			setAuthState('authenticated')
-
 			navigate('/')
 		} catch (error) {
-			setAuthState('unauthenticated')
 			toast({
 				variant: 'destructive',
 				title: 'Uh oh! Something went wrong.',
@@ -129,7 +116,6 @@ export default function AuthProvider({
 	return (
 		<AuthProviderContext.Provider
 			value={{
-				authState,
 				token,
 				setToken,
 				user,

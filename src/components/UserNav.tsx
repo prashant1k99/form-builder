@@ -6,15 +6,15 @@ import {
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
-	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { LiaSignOutAltSolid } from 'react-icons/lia'
 import useAuth from '@/components/hooks/useAuth'
 
 export function UserNav() {
-	const { user, signOut, authState } = useAuth()
+	const { user, signOut } = useAuth()
 	return (
-		authState == 'authenticated' && (
+		user.email && (
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -40,12 +40,13 @@ export function UserNav() {
 					</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem
+						className="text-red-400 hover:bg-red-500 hover:text-white"
 						onClick={(e) => {
 							e.preventDefault()
 							signOut()
 						}}>
 						Log out
-						<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+						<LiaSignOutAltSolid className="w-4 h-4 ml-auto" />
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
