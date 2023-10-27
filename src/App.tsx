@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import Dashboard from '@/pages/dashboard'
+import Dashboard from '@/pages/Dashboard'
 import Builder from '@/pages/Builder'
 import { ThemeProvider } from '@/lib/theme-provider'
 import Layout from '@/components/Layout'
