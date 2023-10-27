@@ -1,4 +1,4 @@
-import { useTheme } from '@/lib/theme-provider'
+import { useTheme } from '@/lib/context/ThemeContext'
 import { Button } from './ui/button'
 import { MdDarkMode, MdSunny } from 'react-icons/md'
 

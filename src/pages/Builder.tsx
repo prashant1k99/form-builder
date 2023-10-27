@@ -9,10 +9,8 @@ import {
 	useSensors,
 } from '@dnd-kit/core'
 import DragOverlayWrapper from '@/components/DragOverlayWrapper'
-import DesignerContextProvider from '@/components/context/DesignerContext'
-import { Link, useParams } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { MdKeyboardBackspace } from 'react-icons/md'
+import DesignerContextProvider from '@/lib/context/DesignerContext'
+import { useParams } from 'react-router-dom'
 
 function App() {
 	const { id } = useParams()
