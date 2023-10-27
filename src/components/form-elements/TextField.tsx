@@ -52,14 +52,7 @@ export const TextFieldFormElement: FormElement = {
 
 	designerComponent: DesignerComponent,
 
-	formComponent: () => {
-		return (
-			<div className="flex flex-col gap-2">
-				<label htmlFor="text-field-label">Label</label>
-				<input type="text" id="text-field-label" />
-			</div>
-		)
-	},
+	formComponent: FormComponent,
 
 	propertiesComponent: PropertiesComponent,
 }
@@ -215,5 +208,26 @@ function PropertiesComponent({
 				/>
 			</form>
 		</Form>
+	)
+}
+
+function FormComponent({
+	elementInstance,
+}: {
+	elementInstance: FormElementInstance
+}) {
+	const element = elementInstance as CustomInstance
+	const { label, helperText, placeholder, required } = element.extraAttributes
+	return (
+		<div className="flex flex-col gap-2 w-full">
+			<Label>
+				{label}
+				{required && <span className="text-red-500 pl-1">*</span>}
+			</Label>
+			<Input placeholder={placeholder} required={required} />
+			{helperText && (
+				<p className="text-xs text-muted-foreground">{helperText}</p>
+			)}
+		</div>
 	)
 }
