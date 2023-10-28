@@ -14,7 +14,7 @@ import {
 	updateDoc,
 	deleteDoc,
 } from 'firebase/firestore'
-import { Form } from '@/types/forms'
+import { Form, ModifyForm } from '@/types/forms'
 
 export default class Forms {
 	public static async getForms(
@@ -34,12 +34,16 @@ export default class Forms {
 		}
 		const formsSnapshot = await getDocs(q)
 		formsSnapshot.forEach((form) => {
-			forms.push({ ...form.data(), id: form.id } as Form)
+			forms.push({
+				...form.data(),
+				id: form.id,
+				fields: form.data().fields || [],
+			} as Form)
 		})
 		return forms
 	}
 
-	public async getFormById(id: string) {
+	public static async getFormById(id: string) {
 		const docRef = doc(db, 'forms', id)
 		const docSnap = await getDoc(docRef)
 
@@ -50,10 +54,7 @@ export default class Forms {
 		return { ...docSnap.data(), id: docSnap.id } as Form
 	}
 
-	public async createForm(
-		uid: string,
-		form: Omit<Form, 'id' | 'createdAt' | 'updatedAt' | 'userId'>
-	): Promise<Form> {
+	public static async createForm(uid: string, form: ModifyForm): Promise<Form> {
 		const docRef = await addDoc(collection(db, 'forms'), {
 			...form,
 			userId: uid,
@@ -62,6 +63,7 @@ export default class Forms {
 		})
 		return {
 			...form,
+			fields: form.fields || [],
 			id: docRef.id,
 			userId: uid,
 			createdAt: new Date(),
@@ -69,7 +71,8 @@ export default class Forms {
 		} as Form
 	}
 
-	public async updateForm(id: string, form: Form): Promise<void> {
+	public static async updateForm(id: string, form: ModifyForm): Promise<void> {
+		console.log('UPDATING FORM: ', id)
 		const docRef = doc(db, 'forms', id)
 		await updateDoc(docRef, {
 			...form,
@@ -77,7 +80,7 @@ export default class Forms {
 		})
 	}
 
-	public async updateElements(
+	public static async updateElements(
 		id: string,
 		elements: Form['fields']
 	): Promise<void> {
@@ -88,7 +91,7 @@ export default class Forms {
 		})
 	}
 
-	public async deleteForm(id: string): Promise<void> {
+	public static async deleteForm(id: string): Promise<void> {
 		const docRef = doc(db, 'forms', id)
 		await deleteDoc(docRef)
 	}

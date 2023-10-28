@@ -21,9 +21,17 @@ export type Form = {
 	name: string
 	state: FormState
 	description?: string
-	fields: FormElementInstance[]
+	fields?: FormElementInstance[]
 	extraConfig?: FormExtraConfig
 	userId: string
 	createdAt: Date
 	updatedAt: Date
+}
+
+export type ModifyForm = {
+	name?: string
+	state?: FormState
+	description?: string
+	fields?: FormElementInstance[]
+	extraConfig?: FormExtraConfig
 }

@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import './App.css'
 import Dashboard from '@/pages/Dashboard'
 import Builder from '@/pages/Builder'
@@ -31,8 +31,9 @@ function App() {
 								</NoAuth>
 							}
 						/>
-						<Route path="/:id" element={<Form />} />
-						<Route path="*" element={<NotFound />} />
+						<Route path="/error-page" element={<NotFound />} />
+						<Route path="/form/:id" element={<Form />} />
+						<Route path="*" element={<Navigate to="/error-page" />} />
 					</Routes>
 					<Toaster />
 				</Layout>

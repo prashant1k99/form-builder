@@ -1,52 +1,15 @@
-import Forms from '@/data/forms'
-import useAuth from '@/hooks/useAuth'
-import { Form } from '@/types/forms'
-import { useEffect, useState } from 'react'
-import { toast } from '@/components/ui/use-toast'
-// import { ToastAction } from '@/components/ui/toast'
-
-type FetchState = 'idle' | 'loading' | 'error' | 'success'
+import CreateForm from '@/components/Dashboard/CreateForm'
+import CreateFormSheet from '@/components/Dashboard/CreateFormSheet'
+import { MdEdit } from 'react-icons/md'
 
 function Dashboard() {
-	const { user } = useAuth()
-	const [formsList, setFormsList] = useState<Form[]>([])
-	const [state, setState] = useState<FetchState>('idle')
-
-	useEffect(() => {
-		setState('loading')
-		if (!user.uid) return
-		Forms.getForms(user.uid)
-			.then((formData) => {
-				setFormsList(formData)
-				setState('success')
-			})
-			.catch((error) => {
-				console.error(error)
-				toast({
-					variant: 'destructive',
-					title: 'Uh oh! Something went wrong.',
-					description:
-						error instanceof Error
-							? error.message
-							: 'An unknown error occurred.',
-				})
-				setState('error')
-			})
-	}, [user.uid])
-
 	return (
-		<div>
+		<div className="flex flex-col justify-start items-center h-full">
 			<h1>Dashboard</h1>
-			{state == 'loading' && <p>Loading...</p>}
-			{state == 'success' &&
-				formsList.map((form) => {
-					return (
-						<div key={form.id}>
-							<h2>{form.name}</h2>
-							<p>{form.description}</p>
-						</div>
-					)
-				})}
+			<CreateForm />
+			<CreateFormSheet>
+				<MdEdit className="w-8 h-8" />
+			</CreateFormSheet>
 		</div>
 	)
 }
