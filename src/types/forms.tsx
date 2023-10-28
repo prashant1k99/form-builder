@@ -14,7 +14,7 @@ type FormExtraConfig = {
 	formStyle?: string
 }
 
-type FormState = 'published' | 'unpublished' | 'archived'
+type FormState = 'published' | 'draft'
 
 export type Form = {
 	id: string

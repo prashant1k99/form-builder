@@ -14,7 +14,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Forms from '@/data/forms'
 import { useEffect, useState } from 'react'
 import { Form } from '@/types/forms'
-import { ImSpinner2 } from 'react-icons/im'
+
+import Loader from '@/components/Loader'
 
 function App() {
 	const { id } = useParams()
@@ -53,16 +54,12 @@ function App() {
 
 	return (
 		<>
-			{loading && (
-				<div className="w-full h-full flex justify-center items-center">
-					<ImSpinner2 className="animate-spin h-12 w-12" />
-				</div>
-			)}
+			{loading && <Loader />}
 			{!loading && formData && (
 				<DesignerContextProvider>
 					<DndContext sensors={sensors}>
 						<nav className="flex flex-col w-full">
-							<div className="flex justify-between border-b-2 dark:border-grey-500 p-4 gap-3 items-center">
+							<div className="flex justify-between border-y-2 dark:border-grey-500 p-4 gap-3 items-center">
 								<h2 className="truncate font-medium">
 									<span className="text-muted-foreground mr-2">Form:</span>
 									{formData.name}

@@ -37,6 +37,8 @@ export default class Forms {
 			forms.push({
 				...form.data(),
 				id: form.id,
+				createdAt: form.data().createdAt.toDate(),
+				updatedAt: form.data().updatedAt.toDate(),
 				fields: form.data().fields || [],
 			} as Form)
 		})
@@ -57,6 +59,7 @@ export default class Forms {
 	public static async createForm(uid: string, form: ModifyForm): Promise<Form> {
 		const docRef = await addDoc(collection(db, 'forms'), {
 			...form,
+			state: 'draft',
 			userId: uid,
 			createdAt: serverTimestamp(),
 			updatedAt: serverTimestamp(),
