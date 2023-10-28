@@ -10,7 +10,7 @@ function NavBar() {
 					<Link
 						to={'/'}
 						className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-400 text-transparent bg-clip-text hover:cursor-pointer">
-						CF!
+						FB!
 					</Link>
 				</div>
 				<div className="flex items-center gap-4">
