@@ -5,7 +5,7 @@ import { UserNav } from './UserNav'
 function NavBar() {
 	return (
 		<nav className="flex flex-col w-full">
-			<div className="flex justify-between p-2 pt-4 sm:p-1 px-4 gap-3 items-center">
+			<div className="flex justify-between m-4 sm:my-1 gap-3 items-center">
 				<div className="flex flex-row items-center">
 					<Link
 						to={'/'}

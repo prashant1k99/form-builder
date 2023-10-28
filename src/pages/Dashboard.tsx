@@ -9,11 +9,13 @@ import useAuth from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
 import { Form } from '@/types/forms'
 import { useEffect, useState } from 'react'
-import { AiOutlineFileAdd } from 'react-icons/ai'
+import { AiOutlineFileAdd, AiOutlineSortAscending } from 'react-icons/ai'
+import { BsSortAlphaUpAlt } from 'react-icons/bs'
 
 function Dashboard() {
 	const [formsLoading, setFormsLoading] = useState(true)
 	const [formsList, setFormsList] = useState<Form[]>([])
+	const [sort, setSort] = useState<'asc' | 'desc'>('asc')
 	const { user } = useAuth()
 
 	useEffect(() => {
@@ -48,19 +50,33 @@ function Dashboard() {
 			{formsLoading && <Loader />}
 			{!formsLoading && (
 				<div className="flex flex-col max-w-[700px] w-full md:w-3/5 m-auto h-full p-5">
-					<div className="w-full flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center gap-4">
+					<div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 						<div>
 							<h1 className="text-3xl font-bold font-sans">Your Forms</h1>
 							<p className="text-sm text-muted-foreground">
 								Here you can manage your forms.
 							</p>
 						</div>
-						<CreateForm>
-							<Button variant={'secondary'}>
-								<AiOutlineFileAdd className="w-6 h-6 mr-2" />
-								Create New Form
+						<div className="flex items-center flex-row-reverse md:flex-row w-full sm:w-fit md:justify-end">
+							<Button
+								variant={'ghost'}
+								className="hover:bg-transparent cursor-pointer"
+								onClick={() => {
+									setSort(sort === 'asc' ? 'desc' : 'asc')
+								}}>
+								{sort == 'asc' ? (
+									<BsSortAlphaUpAlt className="w-6 h-6" />
+								) : (
+									<AiOutlineSortAscending className="w-6 h-6" />
+								)}
 							</Button>
-						</CreateForm>
+							<CreateForm>
+								<Button variant={'secondary'} className="w-full md:w-fit">
+									<AiOutlineFileAdd className="w-6 h-6 mr-2" />
+									Create New Form
+								</Button>
+							</CreateForm>
+						</div>
 					</div>
 					<Separator className="my-6" />
 					<div className="flex flex-col mt-4 gap-4">
