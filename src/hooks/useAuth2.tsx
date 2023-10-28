@@ -18,6 +18,11 @@ function useFetch() {
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		const token = localStorage.getItem('token')
+		const user = JSON.parse(localStorage.getItem('user') || '{}')
+		setToken(token)
+		setUser(user)
+
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
 				localStorage.setItem('user', JSON.stringify(user))
@@ -27,10 +32,6 @@ function useFetch() {
 				setUser({} as User)
 			}
 		})
-		const token = localStorage.getItem('token')
-		const user = JSON.parse(localStorage.getItem('user') || '{}')
-		setToken(token)
-		setUser(user)
 	}, [])
 
 	const signOut = async () => {

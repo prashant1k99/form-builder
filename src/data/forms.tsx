@@ -1,5 +1,4 @@
 import { db } from '@/lib/firebase'
-import useAuth from '@/hooks/useAuth'
 import {
 	getDocs,
 	collection,
@@ -18,15 +17,11 @@ import {
 import { Form } from '@/types/forms'
 
 export default class Forms {
-	private static collectionName: string = 'forms'
-	private static currentUser = useAuth().user
-
 	public static async getForms(
 		uid: string,
 		after?: Form,
 		limitDoc: number = 10
 	) {
-		console.log(this.currentUser)
 		const forms: Form[] = []
 		let q = query(
 			collection(db, 'forms'),
@@ -45,7 +40,7 @@ export default class Forms {
 	}
 
 	public async getFormById(id: string) {
-		const docRef = doc(db, this.collectionName, id)
+		const docRef = doc(db, 'forms', id)
 		const docSnap = await getDoc(docRef)
 
 		if (!docSnap.exists()) {
@@ -56,25 +51,26 @@ export default class Forms {
 	}
 
 	public async createForm(
+		uid: string,
 		form: Omit<Form, 'id' | 'createdAt' | 'updatedAt' | 'userId'>
 	): Promise<Form> {
-		const docRef = await addDoc(collection(db, this.collectionName), {
+		const docRef = await addDoc(collection(db, 'forms'), {
 			...form,
-			userId: this.currentUser?.uid,
+			userId: uid,
 			createdAt: serverTimestamp(),
 			updatedAt: serverTimestamp(),
 		})
 		return {
 			...form,
 			id: docRef.id,
-			userId: this.currentUser?.uid,
+			userId: uid,
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		} as Form
 	}
 
 	public async updateForm(id: string, form: Form): Promise<void> {
-		const docRef = doc(db, this.collectionName, id)
+		const docRef = doc(db, 'forms', id)
 		await updateDoc(docRef, {
 			...form,
 			updatedAt: serverTimestamp(),
@@ -85,7 +81,7 @@ export default class Forms {
 		id: string,
 		elements: Form['fields']
 	): Promise<void> {
-		const docRef = doc(db, this.collectionName, id)
+		const docRef = doc(db, 'forms', id)
 		await updateDoc(docRef, {
 			fields: elements,
 			updatedAt: serverTimestamp(),
@@ -93,7 +89,7 @@ export default class Forms {
 	}
 
 	public async deleteForm(id: string): Promise<void> {
-		const docRef = doc(db, this.collectionName, id)
+		const docRef = doc(db, 'forms', id)
 		await deleteDoc(docRef)
 	}
 }
