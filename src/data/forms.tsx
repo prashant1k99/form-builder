@@ -17,16 +17,22 @@ import {
 import { Form, ModifyForm } from '@/types/forms'
 
 export default class Forms {
-	public static async getForms(
-		uid: string,
-		after?: Form,
-		limitDoc: number = 10
-	) {
+	public static async getForms({
+		uid,
+		after,
+		order = 'desc',
+		limitDoc = 10,
+	}: {
+		uid: string
+		after?: Form
+		order?: 'asc' | 'desc'
+		limitDoc?: number
+	}) {
 		const forms: Form[] = []
 		let q = query(
 			collection(db, 'forms'),
 			where('userId', '==', uid),
-			orderBy('createdAt', 'desc'),
+			orderBy('createdAt', order),
 			limit(limitDoc)
 		)
 		if (after) {

@@ -15,7 +15,7 @@ import { BsSortAlphaUpAlt } from 'react-icons/bs'
 function Dashboard() {
 	const [formsLoading, setFormsLoading] = useState(true)
 	const [formsList, setFormsList] = useState<Form[]>([])
-	const [sort, setSort] = useState<'asc' | 'desc'>('asc')
+	const [sort, setSort] = useState<'asc' | 'desc'>('desc')
 	const { user } = useAuth()
 
 	useEffect(() => {
@@ -23,7 +23,10 @@ function Dashboard() {
 			setFormsLoading(true)
 			return
 		}
-		Forms.getForms(user.uid)
+		Forms.getForms({
+			uid: user.uid,
+			order: sort,
+		})
 			.then((forms) => {
 				if (forms.length > 0) {
 					setFormsList(forms)
@@ -32,7 +35,6 @@ function Dashboard() {
 			})
 			.catch((error) => {
 				setFormsLoading(false)
-				console.error(error)
 				console.error(error)
 				toast({
 					variant: 'destructive',
@@ -43,7 +45,7 @@ function Dashboard() {
 							: 'An unknown error occurred.',
 				})
 			})
-	}, [user])
+	}, [user, sort])
 
 	return (
 		<div className={cn('my-5', formsLoading && 'h-full')}>
