@@ -69,12 +69,13 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
 				<>
 					<div className="absolute right-0 h-full">
 						<Button
+							variant={'destructive'}
 							onClick={(e) => {
 								e.stopPropagation()
 								setSelectedElement(null)
 								removeElement(element.id)
 							}}
-							className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500">
+							className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500 ">
 							<MdDelete className="h-6 w-6 text-accent" />
 						</Button>
 					</div>

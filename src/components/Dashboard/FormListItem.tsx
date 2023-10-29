@@ -23,18 +23,20 @@ function FormListItem({ form }: { form: Form }) {
 					</span>
 				</div>
 			</div>
-			<div className="flex items-center justify-end">
-				<Link
-					to={`/builder/${form.id}`}
-					className="text-sm text-blue-500 hover:underline">
-					<Button
-						variant={'outline'}
-						className="bg-transparent border-none hover:border-1"
-						size={'icon'}>
-						<HiOutlinePencil className="h-5 w-5" />
-					</Button>
-				</Link>
-			</div>
+			{form.state != 'published' && (
+				<div className="flex items-center justify-end">
+					<Link
+						to={`/builder/${form.id}`}
+						className="text-sm text-blue-500 hover:underline">
+						<Button
+							variant={'outline'}
+							className="bg-transparent border-none hover:border-1"
+							size={'icon'}>
+							<HiOutlinePencil className="h-5 w-5" />
+						</Button>
+					</Link>
+				</div>
+			)}
 		</div>
 	)
 }

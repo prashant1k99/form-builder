@@ -76,7 +76,6 @@ function Dashboard() {
 	}, [user.uid, sort])
 
 	const lastProductRef = useIntersectionObserver<HTMLElement>(() => {
-		console.log('FETCHING MORE FORMS')
 		setFormsLoading(true)
 		if (hasMore) {
 			fetchForms().then((forms) => {
@@ -133,7 +132,7 @@ function Dashboard() {
 						{formsList.map((form, i, forms) => {
 							return (
 								<li
-									ref={forms.length - 1 === i ? lastProductRef : null}
+									ref={forms.length - 1 === i ? lastProductRef : undefined}
 									className="list-none"
 									key={form.id}>
 									<FormListItem form={form} />

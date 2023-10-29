@@ -9,7 +9,7 @@ function NotFound() {
 				<h1 className="text-9xl">404</h1>
 				<h2 className="text-xl">Not Found!</h2>
 				<Link to={'/'}>
-					<Button variant={'outline'} className="mt-4 text-md">
+					<Button variant={'default'} className="mt-4 text-md">
 						<MdKeyboardBackspace className="h-6 w-6 text-muted-foreground" />
 						Go Back
 					</Button>

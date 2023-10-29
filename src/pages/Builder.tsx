@@ -16,6 +16,8 @@ import { useEffect, useState } from 'react'
 import { Form } from '@/types/forms'
 
 import Loader from '@/components/Loader'
+import FormSaveBtn from '@/components/FormSaveBtn'
+import PublishBtn from '@/components/PublishBtn'
 
 function App() {
 	const { id } = useParams()
@@ -58,20 +60,27 @@ function App() {
 			{!loading && formData && (
 				<DesignerContextProvider>
 					<DndContext sensors={sensors}>
-						<nav className="flex flex-col w-full">
-							<div className="flex justify-between border-y-2 dark:border-grey-500 p-4 gap-3 items-center">
-								<h2 className="truncate font-medium">
-									<span className="text-muted-foreground mr-2">Form:</span>
-									{formData.name}
-								</h2>
-								<div className="flex items-center gap-4">
-									{/* <ThemeSwitcher /> */}
-									<PreviewDialogBtn />
+						<div className="flex flex-col-reverse md:flex-col h-full">
+							<nav className="flex flex-col w-full">
+								<div className="flex justify-between border-y-2 dark:border-grey-500 p-3 gap-3 items-center">
+									<h2 className="truncate font-medium hidden sm:block">
+										<span className="text-muted-foreground mr-2">Form:</span>
+										{formData.name}
+									</h2>
+									<div className="flex items-center gap-4">
+										<PreviewDialogBtn />
+										{formData.state !== 'published' && (
+											<>
+												<FormSaveBtn />
+												<PublishBtn />
+											</>
+										)}
+									</div>
 								</div>
-							</div>
-						</nav>
-						<FormBuilder />
-						<DragOverlayWrapper />
+							</nav>
+							<FormBuilder />
+							<DragOverlayWrapper />
+						</div>
 					</DndContext>
 				</DesignerContextProvider>
 			)}
