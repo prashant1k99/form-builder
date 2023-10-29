@@ -1,5 +1,5 @@
 import { createContext, useState, Dispatch, SetStateAction } from 'react'
-import { FormElementInstance } from '@/components/FormElements'
+import { FormElementInstance } from '@/components/FormBuilder/FormElements'
 
 type DesignerContextType = {
 	elements: FormElementInstance[]

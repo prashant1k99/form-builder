@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '@/hooks/reduxHooks'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import Forms from '@/data/forms'
 import { Form } from '@/types/forms'
 import Loader from '@/components/Loader'
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/tooltip'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AiOutlineAlert } from 'react-icons/ai'
+import FormSubmission from '@/components/FormData/FormSubmissions'
 
 const FormData = () => {
 	const { id } = useParams()
@@ -71,15 +72,17 @@ const FormData = () => {
 							</p>
 						</div>
 						<div className="flex items-center flex-row-reverse md:flex-row w-full sm:w-fit md:justify-end">
-							<Button variant={'secondary'} className="w-full md:w-fit px-10">
-								<GoProjectSymlink className="w-6 h-6 mr-2" />
-								Visit
-							</Button>
+							<Link to={`/form/${id}`}>
+								<Button variant={'secondary'} className="w-full md:w-fit px-10">
+									<GoProjectSymlink className="w-6 h-6 mr-2" />
+									Visit
+								</Button>
+							</Link>
 						</div>
 					</div>
 					<Separator className="my-6" />
 					<Alert variant={'default'} className="mb-6 border-branding">
-						<AiOutlineAlert className="h-4 w-4 bg-branding" />
+						<AiOutlineAlert className="h-4 w-4" />
 						<AlertTitle className="text-branding">Heads up!</AlertTitle>
 						<AlertDescription>
 							Embedable link coming soon. For now, you can share this link to
@@ -122,6 +125,9 @@ const FormData = () => {
 						</div>
 					</div>
 					<Separator className="my-6" />
+					<div className="w-full">
+						<FormSubmission />
+					</div>
 				</div>
 			)}
 		</div>

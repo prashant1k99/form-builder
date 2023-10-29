@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core'
 import { FormElement } from './FormElements'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 
 function SidebarBtnElement({ formElement }: { formElement: FormElement }) {

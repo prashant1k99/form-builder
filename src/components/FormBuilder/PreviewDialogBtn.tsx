@@ -1,9 +1,9 @@
 import useDesigner from '@/hooks/useDesigner'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import { MdPreview } from 'react-icons/md'
-import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
+import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog'
 import { FormElements } from './FormElements'
-import { ScrollArea } from './ui/scroll-area'
+import { ScrollArea } from '../ui/scroll-area'
 
 function PreviewDialogBtn() {
 	const { elements } = useDesigner()

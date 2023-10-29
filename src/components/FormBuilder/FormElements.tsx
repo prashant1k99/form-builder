@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { TextFieldFormElement } from './form-elements/TextField'
+import { TextFieldFormElement } from '../form-elements/TextField'
 
 export type ElementsType = 'TextField'
 

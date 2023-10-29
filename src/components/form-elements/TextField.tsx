@@ -1,5 +1,9 @@
 import { MdTextFields } from 'react-icons/md'
-import { ElementsType, FormElement, FormElementInstance } from '../FormElements'
+import {
+	ElementsType,
+	FormElement,
+	FormElementInstance,
+} from '../FormBuilder/FormElements'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import z from 'zod'

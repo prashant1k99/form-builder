@@ -1,4 +1,4 @@
-import { FormElementInstance } from '@/components/FormElements'
+import { FormElementInstance } from '@/components/FormBuilder/FormElements'
 
 type FormExtraConfig = {
 	allowMultipleSubmissions?: boolean

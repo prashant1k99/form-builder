@@ -1,7 +1,7 @@
 import { AiOutlineClose } from 'react-icons/ai'
 import { FormElements } from './FormElements'
 import useDesigner from '@/hooks/useDesigner'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 
 function PropertiesFormSidebar() {
 	const { selectedElement, setSelectedElement } = useDesigner()

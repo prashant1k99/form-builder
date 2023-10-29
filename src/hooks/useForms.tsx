@@ -1,4 +1,4 @@
-import { FormElementInstance } from '@/components/FormElements'
+import { FormElementInstance } from '@/components/FormBuilder/FormElements'
 import { ToastAction } from '@/components/ui/toast'
 import { toast } from '@/components/ui/use-toast'
 import Forms from '@/data/forms'

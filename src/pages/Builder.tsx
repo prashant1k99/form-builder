@@ -1,6 +1,6 @@
-import FormBuilder from '@/components/FormBuilder'
+import FormBuilder from '@/components/FormBuilder/FormBuilder'
 
-import PreviewDialogBtn from '@/components/PreviewDialogBtn'
+import PreviewDialogBtn from '@/components/FormBuilder/PreviewDialogBtn'
 import {
 	DndContext,
 	MouseSensor,
@@ -8,15 +8,15 @@ import {
 	useSensor,
 	useSensors,
 } from '@dnd-kit/core'
-import DragOverlayWrapper from '@/components/DragOverlayWrapper'
+import DragOverlayWrapper from '@/components/FormBuilder/DragOverlayWrapper'
 import DesignerContextProvider from '@/lib/context/DesignerContext'
 import { useNavigate, useParams } from 'react-router-dom'
 import Forms from '@/data/forms'
 import { useEffect, useState } from 'react'
 
 import Loader from '@/components/Loader'
-import FormSaveBtn from '@/components/FormSaveBtn'
-import PublishBtn from '@/components/PublishBtn'
+import FormSaveBtn from '@/components/FormBuilder/FormSaveBtn'
+import PublishBtn from '@/components/FormBuilder/PublishBtn'
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
 import { setActiveForm } from '@/state/form'
 import { Form } from '@/types/forms'
