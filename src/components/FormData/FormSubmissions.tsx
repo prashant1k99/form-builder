@@ -1,16 +1,8 @@
 import { PiGearSixLight } from 'react-icons/pi'
 import { Button } from '../ui/button'
 import SubmissionTable from './SubmissionTable'
-
-const people = [
-	{
-		name: 'Lindsay Walton',
-		title: 'Front-end Developer',
-		email: 'lindsay.walton@example.com',
-		role: 'Member',
-	},
-	// More people...
-]
+import { useState } from 'react'
+import Loader from '../Loader'
 
 export default function FormSubmission() {
 	const data = [
@@ -48,8 +40,10 @@ export default function FormSubmission() {
 			},
 		],
 		headers = ['Name', 'Email', 'Phone']
+
+	const [isLoading, setIsLoading] = useState(true)
 	return (
-		<div className="">
+		<div className="h-full">
 			<div className="sm:flex sm:items-center">
 				<div className="sm:flex-auto">
 					<h1 className="text-base font-semibold leading-6">Submission</h1>
@@ -66,13 +60,19 @@ export default function FormSubmission() {
 					</Button>
 				</div>
 			</div>
-			<SubmissionTable
-				headers={headers}
-				data={data}
-				recordClicked={(id) => {
-					console.log(id)
-				}}
-			/>
+			<div className="h-full">
+				{isLoading ? (
+					<Loader />
+				) : (
+					<SubmissionTable
+						headers={headers}
+						data={data}
+						recordClicked={(id) => {
+							console.log(id)
+						}}
+					/>
+				)}
+			</div>
 		</div>
 	)
 }

@@ -125,7 +125,7 @@ const FormData = () => {
 						</div>
 					</div>
 					<Separator className="my-6" />
-					<div className="w-full">
+					<div className="w-full h-full">
 						<FormSubmission />
 					</div>
 				</div>
