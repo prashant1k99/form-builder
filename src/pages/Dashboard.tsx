@@ -14,6 +14,15 @@ import { AiOutlineFileAdd, AiOutlineSortAscending } from 'react-icons/ai'
 import { BsSortAlphaUpAlt } from 'react-icons/bs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { QueryDocumentSnapshot } from 'firebase/firestore'
+import { useAppDispatch } from '@/hooks/reduxHooks'
+import {
+	setForms,
+	addForms,
+	setLastForm,
+	setHasMore,
+	setSort,
+	setLimit,
+} from '@/state/slices/forms'
 
 function Dashboard() {
 	const [formsLoading, setFormsLoading] = useState(true)
@@ -22,6 +31,8 @@ function Dashboard() {
 	const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot | null>(null)
 	const [hasMore, setHasMore] = useState(true)
 	const { user } = useAuth()
+
+	// const formsList = useSelector((state) => state.forms.forms)
 
 	const limit = 10
 
