@@ -13,6 +13,7 @@ import {
 	addDoc,
 	updateDoc,
 	deleteDoc,
+	Timestamp,
 } from 'firebase/firestore'
 import { Form, ModifyForm } from '@/types/forms'
 
@@ -32,7 +33,7 @@ export default class Forms {
 		let q = query(
 			collection(db, 'forms'),
 			where('userId', '==', uid),
-			orderBy('createdAt', order),
+			orderBy('updatedAt', order),
 			limit(limitDoc)
 		)
 		if (after) {
@@ -46,8 +47,14 @@ export default class Forms {
 				forms.push({
 					...form.data(),
 					id: form.id,
-					createdAt: new Date(form.data().createdAt.toDate()).getTime(),
-					updatedAt: new Date(form.data().updatedAt.toDate()).getTime(),
+					createdAt:
+						form.data().createdAt instanceof Timestamp
+							? form.data().createdAt.toDate().getTime()
+							: new Date(form.data().createdAt).getTime(),
+					updatedAt:
+						form.data().updatedAt instanceof Timestamp
+							? form.data().updatedAt.toDate().getTime()
+							: new Date(form.data().updatedAt).getTime(),
 					fields: form.data().fields || [],
 				} as Form)
 			})
@@ -64,7 +71,18 @@ export default class Forms {
 			throw new Error('No such document!')
 		}
 
-		return { ...docSnap.data(), id: docSnap.id } as Form
+		return {
+			...docSnap.data(),
+			createdAt:
+				docSnap.data().createdAt instanceof Timestamp
+					? docSnap.data().createdAt.toDate().getTime()
+					: new Date(docSnap.data().createdAt).getTime(),
+			updatedAt:
+				docSnap.data().updatedAt instanceof Timestamp
+					? docSnap.data().updatedAt.toDate().getTime()
+					: new Date(docSnap.data().updatedAt).getTime(),
+			id: docSnap.id,
+		} as Form
 	}
 
 	public static async createForm(uid: string, form: ModifyForm): Promise<Form> {

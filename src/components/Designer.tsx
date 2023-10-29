@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	DragEndEvent,
 	useDndMonitor,
@@ -12,6 +12,7 @@ import { ElementsType, FormElementInstance, FormElements } from './FormElements'
 import idGenerator from '@/lib/idGenderator'
 import { Button } from './ui/button'
 import { MdDelete } from 'react-icons/md'
+import { useAppSelector } from '@/hooks/reduxHooks'
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
 	const [mouseIsOver, setMouseIsOver] = useState<boolean>(false)
@@ -110,6 +111,7 @@ function Designer() {
 		selectedElement,
 		setSelectedElement,
 		removeElement,
+		loadElements,
 	} = useDesigner()
 
 	const droppable = useDroppable({
@@ -118,6 +120,12 @@ function Designer() {
 			isDesignerDropArea: true,
 		},
 	})
+
+	const form = useAppSelector((state) => state.forms.activeForm)
+
+	useEffect(() => {
+		loadElements(form?.fields || [])
+	}, [form])
 
 	useDndMonitor({
 		onDragEnd: (event: DragEndEvent) => {
@@ -214,7 +222,7 @@ function Designer() {
 				<div
 					ref={droppable.setNodeRef}
 					className={cn(
-						'bg-background max-w-[920px] p-4 h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1',
+						'bg-background max-w-[920px] p-4 h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto',
 						droppable.isOver && 'ring-2 ring-primary/20'
 					)}>
 					{!droppable.isOver && elements.length == 0 && (

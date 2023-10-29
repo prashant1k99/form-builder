@@ -23,6 +23,9 @@ export const formSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
+    updateActiveForm: (state, action) => {
+      state.activeForm = action.payload;
+    },
     setActiveForm: (state, action) => {
       state.activeForm = action.payload;
     },
@@ -55,6 +58,7 @@ export const {
   setHasMore,
   setSort,
   setLimit,
+  updateActiveForm
 } = formSlice.actions;
 
 export default formSlice.reducer;

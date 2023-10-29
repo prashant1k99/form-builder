@@ -26,6 +26,9 @@ import { toast } from '@/components/ui/use-toast'
 import { ToastAction } from '@/components/ui/toast'
 import { useNavigate } from 'react-router-dom'
 import useAuth from '@/hooks/useAuth'
+import { useAppDispatch } from '@/hooks/reduxHooks'
+import { addForms } from '@/state/form'
+import { Form as FormType } from '@/types/forms'
 
 const FormSchema = z.object({
 	name: z.string().min(2).max(50),
@@ -39,6 +42,10 @@ export default function CreateForm({
 }: {
 	children: React.ReactNode
 }) {
+	const dispatch = useAppDispatch()
+
+	const addForm = (forms: FormType[]) => dispatch(addForms(forms))
+
 	const navigate = useNavigate()
 	const { user } = useAuth()
 	const formSettings = useForm<formSchemaType>({
@@ -58,6 +65,7 @@ export default function CreateForm({
 				name,
 				description,
 			})
+			addForm([form])
 			navigate(`/builder/${form.id}`)
 			// Navigate to the new form
 		} catch (error) {

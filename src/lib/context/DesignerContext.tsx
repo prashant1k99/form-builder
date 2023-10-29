@@ -7,6 +7,7 @@ type DesignerContextType = {
 	removeElement: (id: string) => void
 
 	// Set Element, for edit form action
+	loadElements: (elements: FormElementInstance[]) => void
 
 	selectedElement: FormElementInstance | null
 	setSelectedElement: Dispatch<SetStateAction<FormElementInstance | null>>
@@ -46,6 +47,10 @@ export default function DesignerContextProvider({
 		})
 	}
 
+	const loadElements = (elements: FormElementInstance[]) => {
+		setElements(elements)
+	}
+
 	return (
 		<DesignerContext.Provider
 			value={{
@@ -55,6 +60,7 @@ export default function DesignerContextProvider({
 				selectedElement,
 				setSelectedElement,
 				updateElement,
+				loadElements,
 			}}>
 			{children}
 		</DesignerContext.Provider>
