@@ -13,19 +13,20 @@ import {
 	addDoc,
 	updateDoc,
 	deleteDoc,
+	QueryDocumentSnapshot,
 } from 'firebase/firestore'
 import { Form, ModifyForm } from '@/types/forms'
 
 export default class Forms {
 	public static async getForms({
 		uid,
-		after,
 		order = 'desc',
+		after,
 		limitDoc = 10,
 	}: {
 		uid: string
-		after?: Form
-		order?: 'asc' | 'desc'
+		order: 'asc' | 'desc'
+		after?: QueryDocumentSnapshot | null
 		limitDoc?: number
 	}) {
 		const forms: Form[] = []
@@ -39,16 +40,17 @@ export default class Forms {
 			q = query(q, startAfter(after))
 		}
 		const formsSnapshot = await getDocs(q)
-		formsSnapshot.forEach((form) => {
-			forms.push({
-				...form.data(),
-				id: form.id,
-				createdAt: form.data().createdAt.toDate(),
-				updatedAt: form.data().updatedAt.toDate(),
-				fields: form.data().fields || [],
-			} as Form)
-		})
-		return forms
+		if (formsSnapshot.docs.length > 0)
+			formsSnapshot.forEach((form) => {
+				forms.push({
+					...form.data(),
+					id: form.id,
+					createdAt: form.data().createdAt.toDate(),
+					updatedAt: form.data().updatedAt.toDate(),
+					fields: form.data().fields || [],
+				} as Form)
+			})
+		return { forms, lastDoc: formsSnapshot.docs.pop() || null }
 	}
 
 	public static async getFormById(id: string) {

@@ -6,32 +6,41 @@ import { Separator } from '@/components/ui/separator'
 import { toast } from '@/components/ui/use-toast'
 import Forms from '@/data/forms'
 import useAuth from '@/hooks/useAuth'
+import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 import { cn } from '@/lib/utils'
 import { Form } from '@/types/forms'
 import { useEffect, useState } from 'react'
 import { AiOutlineFileAdd, AiOutlineSortAscending } from 'react-icons/ai'
 import { BsSortAlphaUpAlt } from 'react-icons/bs'
+import { Skeleton } from '@/components/ui/skeleton'
+import { QueryDocumentSnapshot } from 'firebase/firestore'
 
 function Dashboard() {
 	const [formsLoading, setFormsLoading] = useState(true)
 	const [formsList, setFormsList] = useState<Form[]>([])
 	const [sort, setSort] = useState<'asc' | 'desc'>('desc')
+	const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot | null>(null)
+	const [hasMore, setHasMore] = useState(true)
 	const { user } = useAuth()
 
-	useEffect(() => {
-		if (!user.uid) {
-			setFormsLoading(true)
-			return
-		}
-		Forms.getForms({
+	const limit = 10
+
+	const resetParams = () => {
+		setFormsList([])
+		setLastDoc(null)
+		setHasMore(true)
+	}
+
+	const fetchForms = () => {
+		return Forms.getForms({
 			uid: user.uid,
 			order: sort,
+			after: lastDoc,
+			limitDoc: limit,
 		})
-			.then((forms) => {
-				if (forms.length > 0) {
-					setFormsList(forms)
-					setFormsLoading(false)
-				}
+			.then(({ forms, lastDoc }) => {
+				setLastDoc(lastDoc)
+				return forms
 			})
 			.catch((error) => {
 				setFormsLoading(false)
@@ -44,13 +53,51 @@ function Dashboard() {
 							? error.message
 							: 'An unknown error occurred.',
 				})
+				return []
 			})
-	}, [user, sort])
+	}
+
+	useEffect(() => {
+		if (!user.uid) {
+			return
+		}
+		setFormsLoading(true)
+		fetchForms().then((forms) => {
+			if (forms.length > 0) {
+				setFormsList(forms)
+				if (forms.length !== limit) {
+					setHasMore(false)
+				}
+			} else {
+				setHasMore(false)
+			}
+			setFormsLoading(false)
+		})
+	}, [user.uid, sort])
+
+	const lastProductRef = useIntersectionObserver<HTMLElement>(() => {
+		console.log('FETCHING MORE FORMS')
+		setFormsLoading(true)
+		if (hasMore) {
+			fetchForms().then((forms) => {
+				if (forms.length > 0) {
+					setFormsList((prev) => [...prev, ...forms])
+					if (forms.length !== 10) {
+						setHasMore(false)
+					}
+				} else {
+					setHasMore(false)
+				}
+				setFormsLoading(false)
+			})
+		}
+	}, [hasMore, !formsLoading])
 
 	return (
 		<div className={cn('my-5', formsLoading && 'h-full')}>
-			{formsLoading && <Loader />}
-			{!formsLoading && (
+			{formsLoading && formsList.length == 0 ? (
+				<Loader />
+			) : (
 				<div className="flex flex-col max-w-[700px] w-full md:w-3/5 m-auto h-full p-5">
 					<div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 						<div>
@@ -65,6 +112,7 @@ function Dashboard() {
 								className="hover:bg-transparent cursor-pointer"
 								onClick={() => {
 									setSort(sort === 'asc' ? 'desc' : 'asc')
+									resetParams()
 								}}>
 								{sort == 'asc' ? (
 									<BsSortAlphaUpAlt className="w-6 h-6" />
@@ -82,10 +130,17 @@ function Dashboard() {
 					</div>
 					<Separator className="my-6" />
 					<div className="flex flex-col mt-4 gap-4">
-						{formsList.map((form) => {
-							return <FormListItem key={form.id} form={form} />
+						{formsList.map((form, i, forms) => {
+							return (
+								<li
+									ref={forms.length - 1 === i ? lastProductRef : null}
+									className="list-none"
+									key={form.id}>
+									<FormListItem form={form} />
+								</li>
+							)
 						})}
-						{formsList.length === 0 && (
+						{formsList.length === 0 && !formsLoading && (
 							<CreateForm>
 								<div className="flex flex-col border justify-center items-center border-gray-600 rounded-md w-full space-x-4 p-4 h-[120px] cursor-pointer">
 									<AiOutlineFileAdd className="w-6 h-6 mb-2" />
@@ -95,6 +150,9 @@ function Dashboard() {
 									</p>
 								</div>
 							</CreateForm>
+						)}
+						{formsList.length != 0 && formsLoading && (
+							<Skeleton className="flex flex-col border justify-center items-center border-gray-600 rounded-md w-full space-x-4 p-4 h-[120px]" />
 						)}
 					</div>
 				</div>
