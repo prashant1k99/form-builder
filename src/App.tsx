@@ -11,6 +11,7 @@ import { Toaster } from '@/components/ui/toaster'
 import NoAuth from './components/Auth/NoAuth'
 import AuthProvider from './lib/context/AuthContext'
 import Form from '@/pages/Form'
+import FormData from '@/pages/FormData'
 
 function App() {
 	return (
@@ -21,7 +22,7 @@ function App() {
 						<Route path="/" element={<Protected />}>
 							<Route path="/" element={<Dashboard />} />
 							<Route path="/builder/:id" element={<Builder />} />
-							<Route path="/data/:id" element={<Builder />} />
+							<Route path="/data/:id" element={<FormData />} />
 						</Route>
 						<Route
 							path="/auth"
