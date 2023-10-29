@@ -21,15 +21,6 @@ import {
 	FormMessage,
 } from '../ui/form'
 import { Switch } from '../ui/switch'
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
 
 const type: ElementsType = 'TextField'
 
@@ -41,14 +32,10 @@ const extraAttributes = {
 }
 
 const propertiesSchema = z.object({
-	inputType: z.enum(['text', 'email', 'number', 'tel']).default('text'),
 	label: z.string().min(2).max(50),
 	placeholder: z.string().max(50),
 	helperText: z.string().max(100),
 	required: z.boolean().default(false),
-	match: z.string().max(100),
-	maxWords: z.number().default(0),
-	minWords: z.number().default(0),
 })
 
 export const TextFieldFormElement: FormElement = {
@@ -155,27 +142,6 @@ function PropertiesComponent({
 			name: 'label',
 		},
 		{
-			label: 'Input Type',
-			description: '',
-			input: (field: ControllerRenderProps) => (
-				<Select {...field}>
-					<SelectTrigger className="w-[180px]">
-						<SelectValue placeholder="Select Input Type" />
-					</SelectTrigger>
-					<SelectContent
-						onKeyDown={(e) => {
-							if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
-						}}>
-						<SelectGroup>
-							<SelectLabel>Fruits</SelectLabel>
-							<SelectItem value="apple">Apple</SelectItem>
-						</SelectGroup>
-					</SelectContent>
-				</Select>
-			),
-			name: 'inputType',
-		},
-		{
 			label: 'Placeholder',
 			description: 'The placeholder of the text field.',
 			name: 'placeholder',
@@ -255,15 +221,14 @@ function FormComponent({
 	elementInstance: FormElementInstance
 }) {
 	const element = elementInstance as CustomInstance
-	const { label, helperText, placeholder, required, inputType } =
-		element.extraAttributes
+	const { label, helperText, placeholder, required } = element.extraAttributes
 	return (
 		<div className="flex flex-col gap-2 w-full">
 			<Label>
 				{label}
 				{required && <span className="text-red-500 pl-1">*</span>}
 			</Label>
-			<Input type={inputType} placeholder={placeholder} required={required} />
+			<Input placeholder={placeholder} required={required} />
 			{helperText && (
 				<p className="text-xs text-muted-foreground">{helperText}</p>
 			)}
