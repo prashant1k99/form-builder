@@ -13,17 +13,17 @@ import DesignerContextProvider from '@/lib/context/DesignerContext'
 import { useNavigate, useParams } from 'react-router-dom'
 import Forms from '@/data/forms'
 import { useEffect, useState } from 'react'
-import { Form } from '@/types/forms'
 
 import Loader from '@/components/Loader'
 import FormSaveBtn from '@/components/FormSaveBtn'
 import PublishBtn from '@/components/PublishBtn'
+import useForm from '@/hooks/useForms'
 
 function App() {
 	const { id } = useParams()
 	const [loading, setLoading] = useState(true)
-	const [formData, setFormData] = useState<Form | null>(null)
 	const navigate = useNavigate()
+	const { form, setForm } = useForm()
 
 	useEffect(() => {
 		setLoading(true)
@@ -31,7 +31,7 @@ function App() {
 		Forms.getFormById(id as string)
 			.then((form) => {
 				if (!form) navigate(`/not-found`)
-				setFormData(form)
+				setForm(form)
 				setLoading(false)
 			})
 			.catch((error) => {
@@ -39,6 +39,7 @@ function App() {
 				navigate(`/not-found`)
 			})
 	}, [id])
+
 	const mouseSensor = useSensor(MouseSensor, {
 		activationConstraint: {
 			distance: 10,
@@ -57,7 +58,7 @@ function App() {
 	return (
 		<>
 			{loading && <Loader />}
-			{!loading && formData && (
+			{!loading && form && (
 				<DesignerContextProvider>
 					<DndContext sensors={sensors}>
 						<div className="flex flex-col-reverse md:flex-col h-full">
@@ -65,11 +66,11 @@ function App() {
 								<div className="flex justify-between border-y-2 dark:border-grey-500 p-3 gap-3 items-center">
 									<h2 className="truncate font-medium hidden sm:block">
 										<span className="text-muted-foreground mr-2">Form:</span>
-										{formData.name}
+										{form.name}
 									</h2>
 									<div className="flex items-center gap-4">
 										<PreviewDialogBtn />
-										{formData.state !== 'published' && (
+										{form.state !== 'published' && (
 											<>
 												<FormSaveBtn />
 												<PublishBtn />
