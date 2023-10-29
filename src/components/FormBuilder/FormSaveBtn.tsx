@@ -30,8 +30,11 @@ function FormSaveBtn() {
 					...form,
 					fields: elements,
 				})
-				// form.fields = elements
 				setIsSaving(false)
+				toast({
+					title: 'Form saved.',
+					description: 'Your form has been saved.',
+				})
 			})
 			.catch((error) => {
 				setIsSaving(false)

@@ -10,6 +10,17 @@ import { Form } from '@/types/forms'
 import { updateActiveForm } from '@/state/form'
 import { ImSpinner2 } from 'react-icons/im'
 import { useNavigate } from 'react-router-dom'
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 function PublishBtn() {
 	const [isPublishing, setIsPublishing] = useState(false)
@@ -34,9 +45,14 @@ function PublishBtn() {
 					fields: elements,
 					state: 'published',
 				})
-				// form.fields = elements
 				setIsPublishing(false)
-				navigate(`/data/${form.id}`)
+				toast({
+					title: 'Form published.',
+					description: 'Your form has been published.',
+				})
+				setTimeout(() => {
+					navigate(`/data/${form.id}?landingFirst=true`)
+				}, 1000)
 			})
 			.catch((error) => {
 				setIsPublishing(false)
@@ -62,20 +78,42 @@ function PublishBtn() {
 	}
 
 	return (
-		<Button
-			variant={'default'}
-			disabled={isPublishing}
-			onClick={(e) => {
-				e.preventDefault()
-				saveForm()
-			}}>
-			{isPublishing ? (
-				<ImSpinner2 className="animate-spin h-6 w-6 mr-2" />
-			) : (
-				<BiCloudUpload className="h-6 w-6 mr-2" />
-			)}
-			Publish
-		</Button>
+		<AlertDialog>
+			<AlertDialogTrigger asChild>
+				<Button variant={'default'}>
+					<BiCloudUpload className="h-6 w-6 mr-2" />
+					Publish
+				</Button>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogDescription>
+						This action cannot be undone. After publishing, you will be unable
+						to edit this form.
+						<br />
+						<span className="font-medium">
+							Once published, this form will be made available to public and you
+							will be able to collect submissions.
+						</span>
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction
+						disabled={isPublishing}
+						onClick={(e) => {
+							e.preventDefault()
+							saveForm()
+						}}>
+						{isPublishing && (
+							<ImSpinner2 className="animate-spin h-6 w-6 mr-2" />
+						)}
+						Confirm
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	)
 }
 

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAppSelector } from '@/hooks/reduxHooks'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Forms from '@/data/forms'
 import { Form } from '@/types/forms'
 import Loader from '@/components/Loader'
@@ -19,19 +19,41 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AiOutlineAlert } from 'react-icons/ai'
 import FormSubmission from '@/components/FormData/FormSubmissions'
+import { toast } from '@/components/ui/use-toast'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog'
 
 const FormData = () => {
 	const { id } = useParams()
+	const [searchParams, setSearchParams] = useSearchParams()
+	const landingFirst = searchParams.get('landingFirst') == 'true' ? true : false
 	const navigation = useNavigate()
 	const [isLoading, setIsLoading] = useState(true)
 	const [formData, setFormData] = useState<Form | null>(null)
 	const [isCopied, setIsCopied] = useState(false)
+
+	const dialogRef = useRef<HTMLElement>(null)
 
 	const link = window.location.origin + '/form/' + id
 
 	const copyLink = () => {
 		navigator.clipboard.writeText(link)
 		setIsCopied(true)
+		if (landingFirst) {
+			searchParams.delete('landingFirst')
+			setSearchParams(searchParams)
+		}
+		toast({
+			title: 'Copied to clipboard.',
+			description: 'Share this link to users.',
+		})
 		setTimeout(() => {
 			setIsCopied(false)
 		}, 2000)
@@ -40,6 +62,11 @@ const FormData = () => {
 	const form = useAppSelector((state) =>
 		state.forms.forms.find((f) => f.id == id)
 	)
+
+	useEffect(() => {
+		if (landingFirst) dialogRef.current?.click()
+	}, [])
+
 	useEffect(() => {
 		if (form) {
 			setFormData(form)
@@ -130,6 +157,59 @@ const FormData = () => {
 					</div>
 				</div>
 			)}
+			<Dialog>
+				<DialogTrigger asChild>
+					<button ref={dialogRef} className="hidden">
+						Edit profile
+					</button>
+				</DialogTrigger>
+				<DialogContent className="sm:max-w-[425px]">
+					<DialogHeader>
+						<DialogTitle>🎊🎊 Form Published! 🎊🎊</DialogTitle>
+					</DialogHeader>
+					<p className="text-lg">Share this form.</p>
+					<p className="text-muted-foreground">
+						Anyone with the link can view and submit the form.
+					</p>
+					<DialogDescription>
+						<div className="flex items-center justify-between text-sm leading-6">
+							<div className="flex w-0 flex-1 items-center">
+								<BsLink45Deg
+									className="h-5 w-5 flex-shrink-0 text-gray-400"
+									aria-hidden="true"
+								/>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger>
+											<div className="ml-4 flex min-w-0 flex-1 gap-2">
+												<span className="truncate font-medium">{link}</span>
+											</div>
+										</TooltipTrigger>
+										<TooltipContent>
+											<p>Share this link to users.</p>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+							</div>
+						</div>
+					</DialogDescription>
+					<DialogFooter>
+						<Button
+							variant={'outline'}
+							className="w-full md:w-fit"
+							onClick={(e) => {
+								e.preventDefault()
+								copyLink()
+							}}>
+							{!isCopied ? (
+								<BiCopyAlt className="w-4 h-4" />
+							) : (
+								<BsCheckLg className="w-4 h-4 text-branding" />
+							)}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	)
 }
