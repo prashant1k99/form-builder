@@ -1,11 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Form } from '@/types/forms';
-import { QueryDocumentSnapshot } from 'firebase/firestore';
 
 type FormState = {
   activeForm: Form | null;
   forms: Form[];
-  lastForm: QueryDocumentSnapshot | null;
+  lastForm: string | null;
   hasMore: boolean;
   sort: 'asc' | 'desc';
   limit: number;

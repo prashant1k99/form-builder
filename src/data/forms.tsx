@@ -13,7 +13,6 @@ import {
 	addDoc,
 	updateDoc,
 	deleteDoc,
-	QueryDocumentSnapshot,
 } from 'firebase/firestore'
 import { Form, ModifyForm } from '@/types/forms'
 
@@ -26,7 +25,7 @@ export default class Forms {
 	}: {
 		uid: string
 		order: 'asc' | 'desc'
-		after?: QueryDocumentSnapshot | null
+		after?: string | null
 		limitDoc?: number
 	}) {
 		const forms: Form[] = []
@@ -37,7 +36,9 @@ export default class Forms {
 			limit(limitDoc)
 		)
 		if (after) {
-			q = query(q, startAfter(after))
+			const docRef = doc(db, 'forms', after)
+			const docSnap = await getDoc(docRef)
+			q = query(q, startAfter(docSnap))
 		}
 		const formsSnapshot = await getDocs(q)
 		if (formsSnapshot.docs.length > 0)
@@ -45,12 +46,14 @@ export default class Forms {
 				forms.push({
 					...form.data(),
 					id: form.id,
-					createdAt: form.data().createdAt.toDate(),
-					updatedAt: form.data().updatedAt.toDate(),
+					createdAt: new Date(form.data().createdAt.toDate()).getTime(),
+					updatedAt: new Date(form.data().updatedAt.toDate()).getTime(),
 					fields: form.data().fields || [],
 				} as Form)
 			})
-		return { forms, lastDoc: formsSnapshot.docs.pop() || null }
+		const lastDocSnap = formsSnapshot.docs.pop()
+		const lastDoc = lastDocSnap?.id || null
+		return { forms, lastDoc }
 	}
 
 	public static async getFormById(id: string) {
@@ -77,8 +80,8 @@ export default class Forms {
 			fields: form.fields || [],
 			id: docRef.id,
 			userId: uid,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createdAt: new Date().getTime(),
+			updatedAt: new Date().getTime(),
 		} as Form
 	}
 

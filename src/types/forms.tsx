@@ -24,8 +24,8 @@ export type Form = {
 	fields?: FormElementInstance[]
 	extraConfig?: FormExtraConfig
 	userId: string
-	createdAt: Date
-	updatedAt: Date
+	createdAt: number
+	updatedAt: number
 }
 
 export type ModifyForm = {

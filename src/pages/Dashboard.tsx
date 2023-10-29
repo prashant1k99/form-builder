@@ -13,28 +13,30 @@ import { useEffect, useState } from 'react'
 import { AiOutlineFileAdd, AiOutlineSortAscending } from 'react-icons/ai'
 import { BsSortAlphaUpAlt } from 'react-icons/bs'
 import { Skeleton } from '@/components/ui/skeleton'
-import { QueryDocumentSnapshot } from 'firebase/firestore'
-import { useAppDispatch } from '@/hooks/reduxHooks'
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
 import {
 	setForms,
 	addForms,
 	setLastForm,
-	setHasMore,
-	setSort,
-	setLimit,
-} from '@/state/slices/forms'
+	setHasMore as setHasMoreState,
+	setSort as setSortState,
+} from '@/state/form'
 
 function Dashboard() {
 	const [formsLoading, setFormsLoading] = useState(true)
-	const [formsList, setFormsList] = useState<Form[]>([])
-	const [sort, setSort] = useState<'asc' | 'desc'>('desc')
-	const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot | null>(null)
-	const [hasMore, setHasMore] = useState(true)
 	const { user } = useAuth()
 
-	// const formsList = useSelector((state) => state.forms.forms)
-
-	const limit = 10
+	const formsList = useAppSelector((state) => state.forms.forms)
+	const sort = useAppSelector((state) => state.forms.sort)
+	const lastDoc = useAppSelector((state) => state.forms.lastForm)
+	const hasMore = useAppSelector((state) => state.forms.hasMore)
+	const limit = useAppSelector((state) => state.forms.limit)
+	const dispatch = useAppDispatch()
+	const setFormsList = (forms: Form[]) => dispatch(setForms(forms))
+	const addFormsList = (forms: Form[]) => dispatch(addForms(forms))
+	const setLastDoc = (form: string | null) => dispatch(setLastForm(form))
+	const setHasMore = (hasMore: boolean) => dispatch(setHasMoreState(hasMore))
+	const setSort = (sort: 'asc' | 'desc') => dispatch(setSortState(sort))
 
 	const resetParams = () => {
 		setFormsList([])
@@ -91,7 +93,7 @@ function Dashboard() {
 		if (hasMore) {
 			fetchForms().then((forms) => {
 				if (forms.length > 0) {
-					setFormsList((prev) => [...prev, ...forms])
+					addFormsList(forms)
 					if (forms.length !== 10) {
 						setHasMore(false)
 					}
