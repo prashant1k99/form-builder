@@ -13,6 +13,7 @@ import idGenerator from '@/lib/idGenderator'
 import { Button } from './ui/button'
 import { MdDelete } from 'react-icons/md'
 import { useAppSelector } from '@/hooks/reduxHooks'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
 	const [mouseIsOver, setMouseIsOver] = useState<boolean>(false)
@@ -219,7 +220,7 @@ function Designer() {
 					e.stopPropagation()
 					if (selectedElement) setSelectedElement(null)
 				}}>
-				<div
+				<ScrollArea
 					ref={droppable.setNodeRef}
 					className={cn(
 						'bg-background max-w-[920px] p-4 h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto',
@@ -244,7 +245,7 @@ function Designer() {
 							<div className="h-[120px] rounded-md bg-primary/20"></div>
 						</div>
 					)}
-				</div>
+				</ScrollArea>
 			</div>
 			<DesignerSidebar />
 		</div>

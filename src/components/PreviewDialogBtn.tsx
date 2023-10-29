@@ -3,6 +3,7 @@ import { Button } from './ui/button'
 import { MdPreview } from 'react-icons/md'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
 import { FormElements } from './FormElements'
+import { ScrollArea } from './ui/scroll-area'
 
 function PreviewDialogBtn() {
 	const { elements } = useDesigner()
@@ -25,18 +26,20 @@ function PreviewDialogBtn() {
 						</p>
 					</div>
 					<div className="bg-accent flex flex-col flex-grow items-center justify-center p-4 bg-[url(@/assets/circuit-board.svg)] dark:bg-[url(@/assets/circuit-board-dark.svg)] overflow-y-auto">
-						<div className="max-w-[600px] flex flex-col gap-4 flex-grow bg-background h-full w-full rounded-2xl p-8 overflow-y-auto">
-							{elements.map((element) => {
-								const ElementComponent =
-									FormElements[element.type].formComponent
-								return (
-									<ElementComponent
-										key={element.id}
-										elementInstance={element}
-									/>
-								)
-							})}
-						</div>
+						<ScrollArea className="max-w-[600px] flex flex-col gap-4 flex-grow bg-background h-full w-full rounded-2xl p-8 overflow-y-auto">
+							<div className="flex flex-col gap-4 m-2">
+								{elements.map((element) => {
+									const ElementComponent =
+										FormElements[element.type].formComponent
+									return (
+										<ElementComponent
+											key={element.id}
+											elementInstance={element}
+										/>
+									)
+								})}
+							</div>
+						</ScrollArea>
 					</div>
 				</DialogContent>
 			</Dialog>

@@ -1,12 +1,25 @@
 import { Form } from '@/types/forms'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { HiOutlinePencil } from 'react-icons/hi'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
+import { cn } from '@/lib/utils'
 
 function FormListItem({ form }: { form: Form }) {
+	const navigate = useNavigate()
+
 	return (
-		<div className="flex flex-row border justify-between border-gray-600 rounded-md w-full space-x-4 p-4 hover:dark:bg-slate-900">
+		<div
+			className={cn(
+				'flex flex-row border justify-between border-gray-600 rounded-md w-full space-x-4 p-4',
+				form.state == 'published' && 'cursor-pointer hover:dark:bg-slate-900'
+			)}
+			onClick={(e) => {
+				if (form.state == 'published') {
+					e.preventDefault()
+					navigate(`/data/${form.id}`)
+				}
+			}}>
 			<div className="space-y-1">
 				<h4 className="text-xl font-semibold">
 					{form.name}
