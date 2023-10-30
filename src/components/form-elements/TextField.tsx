@@ -3,13 +3,14 @@ import {
 	ElementsType,
 	FormElement,
 	FormElementInstance,
+	SubmitFunction,
 } from '../FormBuilder/FormElements'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import z from 'zod'
 import { ControllerRenderProps, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useDesigner from '@/hooks/useDesigner'
 import {
 	Form,
@@ -30,6 +31,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
+import { cn } from '@/lib/utils'
 
 const type: ElementsType = 'TextField'
 
@@ -72,6 +74,16 @@ export const TextFieldFormElement: FormElement = {
 	formComponent: FormComponent,
 
 	propertiesComponent: PropertiesComponent,
+
+	validate: (
+		element: FormElementInstance,
+		currentValue: string
+	): string | boolean => {
+		const elementInstance = element as CustomInstance
+		if (elementInstance.extraAttributes.required && currentValue == '')
+			return 'This field is required'
+		return true
+	},
 }
 
 type CustomInstance = FormElementInstance & {
@@ -251,22 +263,70 @@ function PropertiesComponent({
 
 function FormComponent({
 	elementInstance,
+	submitValue,
+	isInvalid,
+	defaultValue,
 }: {
 	elementInstance: FormElementInstance
+	submitValue?: SubmitFunction
+	isInvalid?: string | boolean
+	defaultValue?: any
 }) {
 	const element = elementInstance as CustomInstance
+
+	const [value, setValue] = useState(defaultValue || '')
+	const [error, setError] = useState<boolean | string>(false)
+
+	useEffect(() => {
+		console.log('Invalid', isInvalid)
+		if (isInvalid === false) setError(false)
+		setError(isInvalid || false)
+	}, [isInvalid])
+
 	const { label, helperText, placeholder, required, inputType } =
 		element.extraAttributes
 	return (
 		<div className="flex flex-col gap-2 w-full">
-			<Label>
+			<Label className={cn(error && 'text-red-500')}>
 				{label}
 				{required && <span className="text-red-500 pl-1">*</span>}
 			</Label>
-			<Input type={inputType} placeholder={placeholder} required={required} />
-			{helperText && (
-				<p className="text-xs text-muted-foreground">{helperText}</p>
-			)}
+			<Input
+				className={cn(error && 'text-red-500 ring-2 ring-red-500')}
+				onChange={(e) => setValue(e.target.value)}
+				type={inputType}
+				placeholder={placeholder}
+				required={required}
+				onBlur={(e) => {
+					if (!submitValue) return
+
+					const isValid = TextFieldFormElement.validate(element, e.target.value)
+					if (isValid == true) setError(false)
+					else setError(isValid)
+
+					if (!isValid) return
+					submitValue(element.id, e.target.value)
+				}}
+				value={value}
+			/>
+			<div>
+				{helperText && (
+					<p
+						className={cn(
+							'text-xs text-muted-foreground',
+							error && 'text-red-500'
+						)}>
+						{helperText}
+					</p>
+				)}
+				<p
+					className={cn(
+						'text-xs text-red-500 opacity-0 transition-opacity duration-300',
+						error && 'opacity-100'
+					)}>
+					{error || 'No error'}
+				</p>
+			</div>
 		</div>
 	)
 }

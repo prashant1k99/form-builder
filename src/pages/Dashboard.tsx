@@ -4,22 +4,17 @@ import Loader from '@/components/Loader'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { toast } from '@/components/ui/use-toast'
-import Forms from '@/data/forms'
 import useAuth from '@/hooks/useAuth'
 import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 import { cn } from '@/lib/utils'
-import { Form } from '@/types/forms'
 import { useEffect, useState } from 'react'
 import { AiOutlineFileAdd, AiOutlineSortAscending } from 'react-icons/ai'
 import { BsSortAlphaUpAlt } from 'react-icons/bs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
 import {
-	setForms,
-	addForms,
-	setLastForm,
-	setHasMore as setHasMoreState,
 	setSort as setSortState,
+	fetchForms as fetchFormsState,
 } from '@/state/form'
 
 function Dashboard() {
@@ -28,35 +23,22 @@ function Dashboard() {
 
 	const formsList = useAppSelector((state) => state.forms.forms)
 	const sort = useAppSelector((state) => state.forms.sort)
-	const lastDoc = useAppSelector((state) => state.forms.lastForm)
 	const hasMore = useAppSelector((state) => state.forms.hasMore)
+	const lastDoc = useAppSelector((state) => state.forms.lastForm) || undefined
 	const limit = useAppSelector((state) => state.forms.limit)
 	const dispatch = useAppDispatch()
-	const setFormsList = (forms: Form[]) => dispatch(setForms(forms))
-	const addFormsList = (forms: Form[]) => dispatch(addForms(forms))
-	const setLastDoc = (form: string | null) => dispatch(setLastForm(form))
-	const setHasMore = (hasMore: boolean) => dispatch(setHasMoreState(hasMore))
 	const setSort = (sort: 'asc' | 'desc') => dispatch(setSortState(sort))
 
-	const resetParams = () => {
-		setFormsList([])
-		setLastDoc(null)
-		setHasMore(true)
-	}
-
 	const fetchForms = () => {
-		return Forms.getForms({
-			uid: user.uid,
-			order: sort,
-			after: lastDoc,
-			limitDoc: limit,
-		})
-			.then(({ forms, lastDoc }) => {
-				setLastDoc(lastDoc)
-				return forms
+		dispatch(
+			fetchFormsState({
+				uid: user.uid,
+				sort,
+				lastDoc,
+				limitDoc: limit,
 			})
+		)
 			.catch((error) => {
-				setFormsLoading(false)
 				console.error(error)
 				toast({
 					variant: 'destructive',
@@ -66,42 +48,28 @@ function Dashboard() {
 							? error.message
 							: 'An unknown error occurred.',
 				})
-				return []
+			})
+			.finally(() => {
+				setFormsLoading(false)
 			})
 	}
 
 	useEffect(() => {
+		console.log('USER UID: ', user.uid)
+		console.log('SORT: ', sort)
 		if (!user.uid) {
 			return
 		}
+		console.log('USE EFFECT')
 		setFormsLoading(true)
-		fetchForms().then((forms) => {
-			if (forms.length > 0) {
-				setFormsList(forms)
-				if (forms.length !== limit) {
-					setHasMore(false)
-				}
-			} else {
-				setHasMore(false)
-			}
-			setFormsLoading(false)
-		})
+		fetchForms()
 	}, [user.uid, sort])
 
 	const lastProductRef = useIntersectionObserver<HTMLElement>(() => {
+		console.log('INTERSECTION OBSERVER')
 		setFormsLoading(true)
 		if (hasMore) {
-			fetchForms().then((forms) => {
-				if (forms.length > 0) {
-					addFormsList(forms)
-					if (forms.length !== 10) {
-						setHasMore(false)
-					}
-				} else {
-					setHasMore(false)
-				}
-				setFormsLoading(false)
-			})
+			fetchForms()
 		}
 	}, [hasMore, !formsLoading])
 
@@ -121,7 +89,6 @@ function Dashboard() {
 							className="hover:bg-transparent cursor-pointer"
 							onClick={() => {
 								setSort(sort === 'asc' ? 'desc' : 'asc')
-								resetParams()
 							}}>
 							{sort == 'asc' ? (
 								<BsSortAlphaUpAlt className="w-6 h-6" />
@@ -142,16 +109,17 @@ function Dashboard() {
 					<Loader />
 				) : (
 					<div className="flex flex-col mt-4 gap-4">
-						{formsList.map((form, i, forms) => {
-							return (
-								<li
-									ref={forms.length - 1 === i ? lastProductRef : undefined}
-									className="list-none"
-									key={form.id}>
-									<FormListItem form={form} />
-								</li>
-							)
-						})}
+						{formsList.length > 0 &&
+							formsList.map((form, i, forms) => {
+								return (
+									<li
+										ref={forms.length - 1 === i ? lastProductRef : undefined}
+										className="list-none"
+										key={form.id}>
+										<FormListItem form={form} />
+									</li>
+								)
+							})}
 						{formsList.length === 0 && !formsLoading && (
 							<CreateForm>
 								<div className="flex flex-col border justify-center items-center border-gray-600 rounded-md w-full space-x-4 p-4 h-[120px] cursor-pointer">

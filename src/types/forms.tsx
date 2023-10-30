@@ -1,16 +1,23 @@
 import { FormElementInstance } from '@/components/FormBuilder/FormElements'
 
 type FormExtraConfig = {
-	allowMultipleSubmissions?: boolean
-	allowAnonymousSubmissions?: boolean
-	allowEditAfterSubmit?: boolean
-	submitButtonText?: string
-	submitButtonColor?: string
-	submitButtonTextColor?: string
-	submitButtonIcon?: string
-	confirmationMessage?: string
-	confirmationMessageColor?: string
-	confirmationMessageTextColor?: string
+	submitButton?: {
+		text: string
+		color: string
+		textColor: string
+		action: 'nothing' | 'redirect'
+		url: string
+	}
+	confirmationMessage?: {
+		text: string
+		subText: string
+		color: string
+		textColor: string
+	}
+	action: {
+		type: 'redirect' | 'thankYouPage'
+		url: string
+	}
 	formStyle?: string
 }
 
@@ -34,4 +41,6 @@ export type ModifyForm = {
 	description?: string
 	fields?: FormElementInstance[]
 	extraConfig?: FormExtraConfig
+	userId?: string
+	createdAt?: number
 }

@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import formsReducder from './form';
+import submissionReducer from './submissions';
 
 export const store = configureStore({
   reducer: {
     forms: formsReducder,
+    submissions: submissionReducer,
   },
 });
 

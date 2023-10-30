@@ -3,11 +3,9 @@ import { Button } from '../ui/button'
 import useDesigner from '@/hooks/useDesigner'
 import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks'
 import { useState } from 'react'
-import Forms from '@/data/forms'
 import { toast } from '../ui/use-toast'
 import { ToastAction } from '../ui/toast'
-import { Form } from '@/types/forms'
-import { updateActiveForm } from '@/state/form'
+import { updateForm } from '@/state/form'
 import { ImSpinner2 } from 'react-icons/im'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -27,25 +25,23 @@ function PublishBtn() {
 	const form = useAppSelector((state) => state.forms.activeForm)
 	const { elements } = useDesigner()
 	const dispatch = useAppDispatch()
-	const updateForm = (form: Form) => dispatch(updateActiveForm(form))
 	const navigate = useNavigate()
 
-	const saveForm = () => {
+	const publishForm = () => {
 		if (isPublishing) return
 		if (!form) return
 		setIsPublishing(true)
-		Forms.updateForm(form.id, {
-			...form,
-			fields: elements,
-			state: 'published',
-		})
-			.then(() => {
-				updateForm({
+		dispatch(
+			updateForm({
+				formId: form.id,
+				form: {
 					...form,
 					fields: elements,
 					state: 'published',
-				})
-				setIsPublishing(false)
+				},
+			})
+		)
+			.then(() => {
 				toast({
 					title: 'Form published.',
 					description: 'Your form has been published.',
@@ -55,7 +51,6 @@ function PublishBtn() {
 				}, 1000)
 			})
 			.catch((error) => {
-				setIsPublishing(false)
 				toast({
 					variant: 'destructive',
 					title: 'Uh oh! Something went wrong.',
@@ -68,12 +63,15 @@ function PublishBtn() {
 							altText="Try again"
 							onClick={(e) => {
 								e.preventDefault()
-								saveForm()
+								publishForm()
 							}}>
 							Try again
 						</ToastAction>
 					),
 				})
+			})
+			.finally(() => {
+				setIsPublishing(false)
 			})
 	}
 
@@ -104,7 +102,7 @@ function PublishBtn() {
 						disabled={isPublishing}
 						onClick={(e) => {
 							e.preventDefault()
-							saveForm()
+							publishForm()
 						}}>
 						{isPublishing && (
 							<ImSpinner2 className="animate-spin h-6 w-6 mr-2" />

@@ -11,26 +11,25 @@ import {
 import DragOverlayWrapper from '@/components/FormBuilder/DragOverlayWrapper'
 import DesignerContextProvider from '@/lib/context/DesignerContext'
 import { useNavigate, useParams } from 'react-router-dom'
-import Forms from '@/data/forms'
 import { useEffect, useState } from 'react'
 
 import Loader from '@/components/Loader'
 import FormSaveBtn from '@/components/FormBuilder/FormSaveBtn'
 import PublishBtn from '@/components/FormBuilder/PublishBtn'
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
-import { setActiveForm } from '@/state/form'
+import { setActiveForm as setActiveFormInState, fetchForm } from '@/state/form'
 import { Form } from '@/types/forms'
 
 function App() {
 	const { id } = useParams()
 	const [loading, setLoading] = useState(true)
+	const [form, setForm] = useState<Form | null>(null)
 	const navigate = useNavigate()
 
 	const dispatch = useAppDispatch()
 
 	const forms = useAppSelector((state) => state.forms.forms)
-	const setForm = (activeForm: Form) => dispatch(setActiveForm(activeForm))
-	const form = useAppSelector((state) => state.forms.activeForm)
+	const setActiveForm = (form: Form) => dispatch(setActiveFormInState(form))
 
 	useEffect(() => {
 		setLoading(true)
@@ -38,18 +37,27 @@ function App() {
 		const activeForm = forms.find((form) => form.id === id)
 		if (activeForm) {
 			setForm(activeForm)
+			setActiveForm(activeForm)
 			setLoading(false)
 			return
 		} else {
-			Forms.getFormById(id as string)
-				.then((form) => {
+			dispatch(
+				fetchForm({
+					formId: id as string,
+				})
+			)
+				.then((action) => {
+					const form = action.payload as Form
 					if (!form) navigate(`/not-found`)
+					setActiveForm(form)
 					setForm(form)
-					setLoading(false)
 				})
 				.catch((error) => {
 					console.error(error)
 					navigate(`/not-found`)
+				})
+				.finally(() => {
+					setLoading(false)
 				})
 		}
 	}, [id])

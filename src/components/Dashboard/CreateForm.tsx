@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ImSpinner2 } from 'react-icons/im'
-import Forms from '@/data/forms'
 import z from 'zod'
 import {
 	Form,
@@ -27,8 +26,7 @@ import { ToastAction } from '@/components/ui/toast'
 import { useNavigate } from 'react-router-dom'
 import useAuth from '@/hooks/useAuth'
 import { useAppDispatch } from '@/hooks/reduxHooks'
-import { addForms } from '@/state/form'
-import { Form as FormType } from '@/types/forms'
+import { createForm } from '@/state/form'
 
 const FormSchema = z.object({
 	name: z.string().min(2).max(50),
@@ -44,7 +42,7 @@ export default function CreateForm({
 }) {
 	const dispatch = useAppDispatch()
 
-	const addForm = (forms: FormType[]) => dispatch(addForms(forms))
+	// const addForm = (forms: FormType[]) => dispatch(addForms(forms))
 
 	const navigate = useNavigate()
 	const { user } = useAuth()
@@ -61,12 +59,20 @@ export default function CreateForm({
 		try {
 			console.log('CREATING FORM: ', data)
 			const { name, description } = data
-			const form = await Forms.createForm(user.uid, {
-				name,
-				description,
+
+			dispatch(
+				createForm({
+					uid: user.uid,
+					form: {
+						name,
+						description,
+					},
+				})
+			).then((action) => {
+				const { id } = action.payload as { id: string }
+				navigate(`/builder/${id}`)
 			})
-			addForm([form])
-			navigate(`/builder/${form.id}`)
+
 			// Navigate to the new form
 		} catch (error) {
 			console.error(error)

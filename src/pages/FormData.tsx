@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { useAppSelector } from '@/hooks/reduxHooks'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Forms from '@/data/forms'
 import { Form } from '@/types/forms'
@@ -29,6 +28,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
+import { useAppSelector } from '@/hooks/reduxHooks'
 
 const FormData = () => {
 	const { id } = useParams()
@@ -62,10 +62,9 @@ const FormData = () => {
 	const form = useAppSelector((state) =>
 		state.forms.forms.find((f) => f.id == id)
 	)
-
 	useEffect(() => {
 		if (landingFirst) dialogRef.current?.click()
-	}, [])
+	}, [landingFirst])
 
 	useEffect(() => {
 		if (form) {
@@ -77,6 +76,9 @@ const FormData = () => {
 			Forms.getFormById(id as string)
 				.then((form) => {
 					setFormData(form)
+					if (form.state !== 'published') {
+						navigation('/builder/' + id)
+					}
 				})
 				.catch((error) => {
 					console.error(error)
@@ -91,6 +93,14 @@ const FormData = () => {
 			{isLoading && !formData && <Loader />}
 			{formData && (
 				<div className="flex flex-col max-w-[700px] w-full md:w-3/5 m-auto h-full p-5">
+					<Alert variant={'default'} className="mb-6 border-branding">
+						<AiOutlineAlert className="h-4 w-4" />
+						<AlertTitle className="text-branding">Heads up!</AlertTitle>
+						<AlertDescription>
+							Embedable link coming soon. For now, you can share this link to
+							users.
+						</AlertDescription>
+					</Alert>
 					<div className="flex flex-col w-full sm:flex-row sm:justify-between sm:items-center gap-4">
 						<div>
 							<h1 className="text-3xl font-semibold">{formData.name}</h1>
@@ -108,16 +118,8 @@ const FormData = () => {
 						</div>
 					</div>
 					<Separator className="my-6" />
-					<Alert variant={'default'} className="mb-6 border-branding">
-						<AiOutlineAlert className="h-4 w-4" />
-						<AlertTitle className="text-branding">Heads up!</AlertTitle>
-						<AlertDescription>
-							Embedable link coming soon. For now, you can share this link to
-							users.
-						</AlertDescription>
-					</Alert>
 					<div
-						className="flex items-center justify-between text-sm leading-6"
+						className="flex items-center justify-between text-sm leading-6 py-3 px-6 border-2 rounded-md border-primary/20 cursor-pointer border-primary"
 						onClick={(e) => {
 							e.preventDefault()
 							e.stopPropagation()
@@ -153,7 +155,7 @@ const FormData = () => {
 					</div>
 					<Separator className="my-6" />
 					<div className="w-full h-full">
-						<FormSubmission />
+						<FormSubmission id={id as string} />
 					</div>
 				</div>
 			)}

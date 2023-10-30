@@ -103,24 +103,41 @@ export default class Forms {
 		} as Form
 	}
 
-	public static async updateForm(id: string, form: ModifyForm): Promise<void> {
+	public static async updateForm(id: string, form: ModifyForm): Promise<Form> {
 		console.log('UPDATING FORM: ', id)
 		const docRef = doc(db, 'forms', id)
 		await updateDoc(docRef, {
 			...form,
 			updatedAt: serverTimestamp(),
 		})
+		return {
+			...form,
+			fields: form.fields || [],
+			id,
+			createdAt: form.createdAt || new Date().getTime(),
+			updatedAt: new Date().getTime(),
+		} as Form
 	}
 
 	public static async updateElements(
 		id: string,
 		elements: Form['fields']
-	): Promise<void> {
+	): Promise<{
+		fields: Form['fields']
+		id: string
+		updatedAt: number
+	}> {
+		console.log('UPDATING FORM ELEMENTS: ', id, elements)
 		const docRef = doc(db, 'forms', id)
 		await updateDoc(docRef, {
 			fields: elements,
 			updatedAt: serverTimestamp(),
 		})
+		return {
+			fields: elements,
+			id,
+			updatedAt: new Date().getTime(),
+		}
 	}
 
 	public static async deleteForm(id: string): Promise<void> {

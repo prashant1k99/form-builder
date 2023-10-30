@@ -1,10 +1,36 @@
 import { PiGearSixLight } from 'react-icons/pi'
 import { Button } from '../ui/button'
 import SubmissionTable from './SubmissionTable'
-import { useState } from 'react'
 import Loader from '../Loader'
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
+import { useEffect, useState } from 'react'
+import { fetchSubmissions as fetchSubmissionsFromState } from '@/state/submissions'
 
-export default function FormSubmission() {
+export default function FormSubmission({ id }: { id: string }) {
+	const [isSubmissionLoading, setIsSubmissionLoading] = useState(false)
+	const submissions = useAppSelector((state) => {
+		if (!state.submissions[id]) return []
+		return state.submissions[id]?.submissions || []
+	})
+
+	const dispatch = useAppDispatch()
+
+	const fetchSubmissions = () => {
+		setIsSubmissionLoading(true)
+		dispatch(
+			fetchSubmissionsFromState({
+				formId: id,
+			})
+		)
+			.then((action) => {})
+			.catch((error) => {
+				console.error(error)
+			})
+			.finally(() => {
+				setIsSubmissionLoading(false)
+			})
+	}
+
 	const data = [
 			{
 				id: '1',
@@ -41,7 +67,13 @@ export default function FormSubmission() {
 		],
 		headers = ['Name', 'Email', 'Phone']
 
-	const [isLoading, setIsLoading] = useState(true)
+	useEffect(() => {
+		if (!submissions.length) {
+			setIsSubmissionLoading(true)
+			fetchSubmissions()
+		}
+	}, [id])
+
 	return (
 		<div className="h-full">
 			<div className="sm:flex sm:items-center">
@@ -61,16 +93,21 @@ export default function FormSubmission() {
 				</div>
 			</div>
 			<div className="h-full">
-				{isLoading ? (
+				{isSubmissionLoading ? (
 					<Loader />
 				) : (
-					<SubmissionTable
-						headers={headers}
-						data={data}
-						recordClicked={(id) => {
-							console.log(id)
-						}}
-					/>
+					<>
+						<pre className="text-sm text-muted-foreground">
+							{JSON.stringify(submissions, null, 2)}
+						</pre>
+						<SubmissionTable
+							headers={headers}
+							data={data}
+							recordClicked={(id) => {
+								console.log(id)
+							}}
+						/>
+					</>
 				)}
 			</div>
 		</div>

@@ -10,7 +10,7 @@ import Login from '@/components/Auth/Login'
 import { Toaster } from '@/components/ui/toaster'
 import NoAuth from './components/Auth/NoAuth'
 import AuthProvider from './lib/context/AuthContext'
-import Form from '@/pages/Form'
+import FormView from '@/pages/FormView'
 import FormData from '@/pages/FormData'
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
 							}
 						/>
 						<Route path="/error-page" element={<NotFound />} />
-						<Route path="/form/:id" element={<Form />} />
+						<Route path="/form/:id" element={<FormView />} />
 						<Route path="*" element={<Navigate to="/error-page" />} />
 					</Routes>
 					<Toaster />
