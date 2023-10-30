@@ -29,6 +29,7 @@ function FormElementSidebar() {
 				<p className="text-muted-foreground mb-2">Form Elements</p>
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
 					<SidebarBtnElement formElement={FormElements.TextField} />
+					<SidebarBtnElement formElement={FormElements.TextArea} />
 				</div>
 			</TabsContent>
 			<TabsContent value="settings">Form Properties</TabsContent>

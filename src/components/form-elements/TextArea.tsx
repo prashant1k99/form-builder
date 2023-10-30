@@ -1,4 +1,3 @@
-import { MdTextFields } from 'react-icons/md'
 import {
 	ElementsType,
 	FormElement,
@@ -23,16 +22,18 @@ import {
 } from '../ui/form'
 import { Switch } from '../ui/switch'
 import { cn } from '@/lib/utils'
+import { Textarea } from '../ui/textarea'
+import { BsCardHeading } from 'react-icons/bs'
 
-const type: ElementsType = 'TextField'
+const type: ElementsType = 'TextArea'
 
 const extraAttributes = {
-	label: 'Text Field',
+	label: 'Text Area',
 	placeholder: 'Placeholder',
 	helperText: 'Helper Text',
 	required: false,
 	minLettersCount: '0',
-	maxLetterCount: '50',
+	maxLetterCount: '500',
 }
 
 const propertiesSchema = z.object({
@@ -41,10 +42,10 @@ const propertiesSchema = z.object({
 	helperText: z.string().max(100),
 	required: z.boolean().default(false),
 	minLettersCount: z.string().default('0'),
-	maxLetterCount: z.string().default('50'),
+	maxLetterCount: z.string().default('500'),
 })
 
-export const TextFieldFormElement: FormElement = {
+export const TextAreaFormElement: FormElement = {
 	type,
 
 	construct: (id: string) => {
@@ -56,8 +57,8 @@ export const TextFieldFormElement: FormElement = {
 	},
 
 	designerBtnElement: {
-		icon: MdTextFields,
-		label: 'Text Field',
+		icon: BsCardHeading,
+		label: 'TextArea',
 	},
 
 	designerComponent: DesignerComponent,
@@ -72,11 +73,8 @@ export const TextFieldFormElement: FormElement = {
 	): string | boolean => {
 		const elementInstance = element as CustomInstance
 
-		const {
-			minLettersCount = '0',
-			maxLetterCount = '50',
-			required,
-		} = elementInstance.extraAttributes
+		const { minLettersCount, maxLetterCount, required } =
+			elementInstance.extraAttributes
 		if (required && currentValue == '') return 'This field is required'
 		if (maxLetterCount && currentValue.length > parseInt(maxLetterCount)) {
 			return `This field can have a maximum of ${maxLetterCount} letters`
@@ -105,7 +103,12 @@ function DesignerComponent({
 				{label}
 				{required && <span className="text-red-500 pl-1">*</span>}
 			</Label>
-			<Input readOnly disabled placeholder={placeholder} />
+			<Textarea
+				// className="min-h-[40px]"
+				readOnly
+				disabled
+				placeholder={placeholder}
+			/>
 			{helperText && (
 				<p className="text-xs text-muted-foreground">{helperText}</p>
 			)}
@@ -175,7 +178,7 @@ function PropertiesComponent({
 		{
 			label: 'Label',
 			description:
-				'The label of the text field. It will be displayed above field.',
+				'The label of the text area. It will be displayed above field.',
 			input: (field: ControllerRenderProps) => (
 				<Input
 					{...field}
@@ -189,22 +192,22 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Placeholder',
-			description: 'The placeholder of the text field.',
+			description: 'The placeholder of the text area.',
 			name: 'placeholder',
 		},
 		{
 			label: 'Helper Text',
-			description: 'The helper text of the text field.',
+			description: 'The helper text of the text area.',
 			name: 'helperText',
 		},
 		{
 			label: 'Min Letters',
-			description: 'The minimum number of letters allowed in the text field.',
+			description: 'The minimum number of letters allowed in the text area.',
 			name: 'minLettersCount',
 			input: (field: ControllerRenderProps) => (
 				<Input
 					{...field}
-					value={field.value || 0}
+					value={field.value}
 					type="number"
 					min={0}
 					max={10}
@@ -216,15 +219,15 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Max Letters',
-			description: 'The maximum number of letters allowed in the text field.',
+			description: 'The maximum number of letters allowed in the text area.',
 			name: 'maxLetterCount',
 			input: (field: ControllerRenderProps) => (
 				<Input
 					{...field}
-					value={field.value || 50}
+					value={field.value}
 					type="number"
 					min={10}
-					max={50}
+					max={1000}
 					onKeyDown={(e) => {
 						if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
 					}}
@@ -331,7 +334,7 @@ function FormComponent({
 				{label}
 				{required && <span className="text-red-500 pl-1">*</span>}
 			</Label>
-			<Input
+			<Textarea
 				className={cn(error && 'text-red-500 ring-2 ring-red-500')}
 				onChange={(e) => setValue(e.target.value)}
 				placeholder={placeholder}
@@ -339,7 +342,7 @@ function FormComponent({
 				onBlur={(e) => {
 					if (!submitValue) return
 
-					const isValid = TextFieldFormElement.validate(element, e.target.value)
+					const isValid = TextAreaFormElement.validate(element, e.target.value)
 					if (isValid == true) setError(false)
 					else setError(isValid)
 
