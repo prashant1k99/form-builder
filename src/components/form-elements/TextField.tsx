@@ -22,15 +22,6 @@ import {
 	FormMessage,
 } from '../ui/form'
 import { Switch } from '../ui/switch'
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
 const type: ElementsType = 'TextField'
@@ -40,17 +31,17 @@ const extraAttributes = {
 	placeholder: 'Placeholder',
 	helperText: 'Helper Text',
 	required: false,
+	minLettersCount: '0',
+	maxLetterCount: '50',
 }
 
 const propertiesSchema = z.object({
-	inputType: z.enum(['text', 'email', 'number', 'tel']).default('text'),
 	label: z.string().min(2).max(50),
 	placeholder: z.string().max(50),
 	helperText: z.string().max(100),
 	required: z.boolean().default(false),
-	match: z.string().max(100),
-	maxWords: z.number().default(0),
-	minWords: z.number().default(0),
+	minLettersCount: z.string().default('0'),
+	maxLetterCount: z.string().default('50'),
 })
 
 export const TextFieldFormElement: FormElement = {
@@ -80,8 +71,19 @@ export const TextFieldFormElement: FormElement = {
 		currentValue: string
 	): string | boolean => {
 		const elementInstance = element as CustomInstance
-		if (elementInstance.extraAttributes.required && currentValue == '')
-			return 'This field is required'
+
+		const {
+			minLettersCount = '0',
+			maxLetterCount = '50',
+			required,
+		} = elementInstance.extraAttributes
+		if (required && currentValue == '') return 'This field is required'
+		if (maxLetterCount && currentValue.length > parseInt(maxLetterCount)) {
+			return `This field can have a maximum of ${maxLetterCount} letters`
+		}
+		if (minLettersCount && currentValue.length < parseInt(minLettersCount)) {
+			return `This field must have a minimum of ${minLettersCount} letters`
+		}
 		return true
 	},
 }
@@ -99,7 +101,7 @@ function DesignerComponent({
 	const { label, helperText, placeholder, required } = element.extraAttributes
 	return (
 		<div className="flex flex-col gap-2 w-full">
-			<Label>
+			<Label className="text-muted-foreground">
 				{label}
 				{required && <span className="text-red-500 pl-1">*</span>}
 			</Label>
@@ -120,7 +122,14 @@ function PropertiesComponent({
 }) {
 	const element = elementInstance as CustomInstance
 	const { updateElement } = useDesigner()
-	const { label, helperText, placeholder, required } = element.extraAttributes
+	const {
+		label,
+		helperText,
+		placeholder,
+		required,
+		minLettersCount,
+		maxLetterCount,
+	} = element.extraAttributes
 
 	const form = useForm<propertiesFormSchemaType>({
 		resolver: zodResolver(propertiesSchema),
@@ -130,6 +139,8 @@ function PropertiesComponent({
 			placeholder,
 			helperText,
 			required,
+			minLettersCount,
+			maxLetterCount,
 		},
 	})
 
@@ -138,7 +149,15 @@ function PropertiesComponent({
 	}, [element, form])
 
 	function applyChanges(data: propertiesFormSchemaType) {
-		const { label, placeholder, helperText, required } = data
+		const {
+			label,
+			placeholder,
+			helperText,
+			required,
+			minLettersCount,
+			maxLetterCount,
+		} = data
+		console.log(data)
 		updateElement(element.id, {
 			...element,
 			extraAttributes: {
@@ -146,6 +165,8 @@ function PropertiesComponent({
 				placeholder,
 				helperText,
 				required,
+				minLettersCount,
+				maxLetterCount,
 			},
 		})
 	}
@@ -167,27 +188,6 @@ function PropertiesComponent({
 			name: 'label',
 		},
 		{
-			label: 'Input Type',
-			description: '',
-			input: (field: ControllerRenderProps) => (
-				<Select {...field}>
-					<SelectTrigger className="w-[180px]">
-						<SelectValue placeholder="Select Input Type" />
-					</SelectTrigger>
-					<SelectContent
-						onKeyDown={(e) => {
-							if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
-						}}>
-						<SelectGroup>
-							<SelectLabel>Fruits</SelectLabel>
-							<SelectItem value="apple">Apple</SelectItem>
-						</SelectGroup>
-					</SelectContent>
-				</Select>
-			),
-			name: 'inputType',
-		},
-		{
 			label: 'Placeholder',
 			description: 'The placeholder of the text field.',
 			name: 'placeholder',
@@ -196,6 +196,40 @@ function PropertiesComponent({
 			label: 'Helper Text',
 			description: 'The helper text of the text field.',
 			name: 'helperText',
+		},
+		{
+			label: 'Min Letters',
+			description: 'The minimum number of letters allowed in the text field.',
+			name: 'minLettersCount',
+			input: (field: ControllerRenderProps) => (
+				<Input
+					{...field}
+					value={field.value || 0}
+					type="number"
+					min={0}
+					max={10}
+					onKeyDown={(e) => {
+						if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
+					}}
+				/>
+			),
+		},
+		{
+			label: 'Max Letters',
+			description: 'The maximum number of letters allowed in the text field.',
+			name: 'maxLetterCount',
+			input: (field: ControllerRenderProps) => (
+				<Input
+					{...field}
+					value={field.value || 50}
+					type="number"
+					min={10}
+					max={50}
+					onKeyDown={(e) => {
+						if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
+					}}
+				/>
+			),
 		},
 	]
 
@@ -210,7 +244,14 @@ function PropertiesComponent({
 						<FormField
 							key={property.label}
 							control={form.control}
-							name={property.name as 'label' | 'placeholder' | 'helperText'}
+							name={
+								property.name as
+									| 'label'
+									| 'placeholder'
+									| 'helperText'
+									| 'minLettersCount'
+									| 'maxLetterCount'
+							}
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>{property.label}</FormLabel>

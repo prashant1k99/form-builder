@@ -18,7 +18,7 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
 			ref={dragable.setNodeRef}
 			variant={'outline'}
 			className={cn(
-				'flex flex-col gap-2 h-[120px] w-[120px] cursor-grab',
+				'flex flex-col gap-2 h-[120px] w-full cursor-grab',
 				dragable.isDragging && 'ring-2 ring-primary'
 			)}
 			{...dragable.listeners}

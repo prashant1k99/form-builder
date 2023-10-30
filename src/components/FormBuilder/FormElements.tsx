@@ -2,8 +2,16 @@ import React from 'react'
 
 import { TextFieldFormElement } from '../form-elements/TextField'
 import { TitleFieldFormElement } from '../form-elements/TitleField'
+import { SubTitleFieldFormElement } from '../form-elements/SubTitle'
+import { ParagraphFormElement } from '../form-elements/Paragraph'
+import { SeparatorFormElement } from '../form-elements/Separator'
 
-export type ElementsType = 'TextField' | 'TitleField'
+export type ElementsType =
+	| 'TextField'
+	| 'TitleField'
+	| 'SubTitleField'
+	| 'Paragraph'
+	| 'Separator'
 export type SubmitFunction = (key: string, value: string) => void
 
 export type FormElementInstance = {
@@ -49,4 +57,7 @@ type FormElementsType = {
 export const FormElements: FormElementsType = {
 	TextField: TextFieldFormElement,
 	TitleField: TitleFieldFormElement,
+	SubTitleField: SubTitleFieldFormElement,
+	Paragraph: ParagraphFormElement,
+	Separator: SeparatorFormElement,
 }

@@ -18,7 +18,18 @@ function FormElementSidebar() {
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value="elements">
-				<SidebarBtnElement formElement={FormElements.TextField} />
+				<p className="text-muted-foreground mb-2">Layout Elements</p>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+					<SidebarBtnElement formElement={FormElements.TitleField} />
+					<SidebarBtnElement formElement={FormElements.SubTitleField} />
+					<SidebarBtnElement formElement={FormElements.Paragraph} />
+					<SidebarBtnElement formElement={FormElements.Separator} />
+				</div>
+				<br />
+				<p className="text-muted-foreground mb-2">Form Elements</p>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+					<SidebarBtnElement formElement={FormElements.TextField} />
+				</div>
 			</TabsContent>
 			<TabsContent value="settings">Form Properties</TabsContent>
 		</Tabs>

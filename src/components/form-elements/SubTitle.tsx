@@ -1,4 +1,4 @@
-import { LuHeading1 } from 'react-icons/lu'
+import { LuHeading3 } from 'react-icons/lu'
 import {
 	ElementsType,
 	FormElement,
@@ -20,17 +20,17 @@ import {
 } from '../ui/form'
 import { Label } from '../ui/label'
 
-const type: ElementsType = 'TitleField'
+const type: ElementsType = 'SubTitleField'
 
 const extraAttributes = {
-	title: 'Title',
+	subTitle: 'SubTitle',
 }
 
 const propertiesSchema = z.object({
-	title: z.string().min(2).max(50),
+	subTitle: z.string().min(2).max(100),
 })
 
-export const TitleFieldFormElement: FormElement = {
+export const SubTitleFieldFormElement: FormElement = {
 	type,
 
 	construct: (id: string) => {
@@ -42,8 +42,8 @@ export const TitleFieldFormElement: FormElement = {
 	},
 
 	designerBtnElement: {
-		icon: LuHeading1,
-		label: 'Title Field',
+		icon: LuHeading3,
+		label: 'SubTitle Field',
 	},
 
 	designerComponent: DesignerComponent,
@@ -65,11 +65,11 @@ function DesignerComponent({
 	elementInstance: FormElementInstance
 }) {
 	const element = elementInstance as CustomInstance
-	const { title } = element.extraAttributes
+	const { subTitle } = element.extraAttributes
 	return (
-		<div className="flex flex-col gap-2 w-full">
-			<Label className="text-muted-foreground">Title field</Label>
-			<h1 className="text-3xl">{title}</h1>
+		<div className="flex flex-col gap-2 w-full pb-2">
+			<Label className="text-muted-foreground">SubTitle field</Label>
+			<p className="text-lg">{subTitle}</p>
 		</div>
 	)
 }
@@ -83,13 +83,13 @@ function PropertiesComponent({
 }) {
 	const element = elementInstance as CustomInstance
 	const { updateElement } = useDesigner()
-	const { title } = element.extraAttributes
+	const { subTitle } = element.extraAttributes
 
 	const form = useForm<propertiesFormSchemaType>({
 		resolver: zodResolver(propertiesSchema),
 		mode: 'onBlur',
 		defaultValues: {
-			title,
+			subTitle,
 		},
 	})
 
@@ -98,11 +98,11 @@ function PropertiesComponent({
 	}, [element, form])
 
 	function applyChanges(data: propertiesFormSchemaType) {
-		const { title } = data
+		const { subTitle } = data
 		updateElement(element.id, {
 			...element,
 			extraAttributes: {
-				title,
+				subTitle,
 			},
 		})
 	}
@@ -115,14 +115,14 @@ function PropertiesComponent({
 				onSubmit={(e) => e.preventDefault()}>
 				<FormField
 					control={form.control}
-					name="title"
+					name="subTitle"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Title</FormLabel>
+							<FormLabel>Sub Title</FormLabel>
 							<FormControl>
 								<Input
 									{...field}
-									placeholder="Enter Title"
+									placeholder="Enter Sub Title"
 									onKeyDown={(e) => {
 										if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
 									}}
@@ -143,10 +143,10 @@ function FormComponent({
 	elementInstance: FormElementInstance
 }) {
 	const element = elementInstance as CustomInstance
-	const { title } = element.extraAttributes
+	const { subTitle } = element.extraAttributes
 	return (
-		<div className="flex flex-col gap-2 w-full">
-			<h1 className="text-3xl">{title}</h1>
+		<div className="flex flex-col gap-2 w-full pb-2">
+			<p className="text-lg">{subTitle}</p>
 		</div>
 	)
 }
