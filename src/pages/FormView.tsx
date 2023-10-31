@@ -28,7 +28,7 @@ function FormView() {
 	const formErrors = useRef<{ [key: string]: string | boolean }>({})
 
 	const validateForm: () => boolean = useCallback(() => {
-		if (!form || form.fields.length <= 0) return false
+		if (!form || !form.fields || form.fields.length <= 0) return false
 		console.log(form.fields)
 		for (const field of form.fields as FormElementInstance[]) {
 			const actualValue = formValues.current[field.id] || ''

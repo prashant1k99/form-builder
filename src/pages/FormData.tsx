@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { LegacyRef, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Form } from '@/types/forms'
 import Loader from '@/components/Loader'
@@ -53,7 +53,7 @@ const FormData = () => {
 	const [isCopied, setIsCopied] = useState(false)
 	const [updatingForm, setUpdatingForm] = useState(false)
 
-	const dialogRef = useRef<HTMLElement>(null)
+	const dialogRef = useRef<HTMLLIElement>(null)
 
 	const link = window.location.origin + '/form/' + id
 
@@ -262,7 +262,9 @@ const FormData = () => {
 			)}
 			<Dialog>
 				<DialogTrigger asChild>
-					<button ref={dialogRef} className="hidden">
+					<button
+						ref={dialogRef as unknown as LegacyRef<HTMLButtonElement>}
+						className="hidden">
 						Form Published
 					</button>
 				</DialogTrigger>

@@ -22,7 +22,6 @@ export default function FormSubmission({ id }: { id: string }) {
 				formId: id,
 			})
 		)
-			.then((action) => {})
 			.catch((error) => {
 				console.error(error)
 			})

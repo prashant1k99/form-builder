@@ -7,7 +7,7 @@ import { toast } from '@/components/ui/use-toast'
 import useAuth from '@/hooks/useAuth'
 import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 import { cn } from '@/lib/utils'
-import { useEffect, useState } from 'react'
+import { LegacyRef, useEffect, useState } from 'react'
 import { AiOutlineFileAdd, AiOutlineSortAscending } from 'react-icons/ai'
 import { BsSortAlphaUpAlt } from 'react-icons/bs'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -64,7 +64,6 @@ function Dashboard() {
 	}, [user.uid, sort])
 
 	const lastProductRef = useIntersectionObserver<HTMLElement>(() => {
-		console.log('INTERSECTION OBSERVER')
 		setFormsLoading(true)
 		if (hasMore) {
 			fetchForms()
@@ -111,7 +110,11 @@ function Dashboard() {
 							formsList.map((form, i, forms) => {
 								return (
 									<li
-										ref={forms.length - 1 === i ? lastProductRef : undefined}
+										ref={
+											forms.length - 1 === i
+												? (lastProductRef as unknown as LegacyRef<HTMLLIElement>)
+												: undefined
+										}
 										className="list-none"
 										key={form.id}>
 										<FormListItem form={form} />
