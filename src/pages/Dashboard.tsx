@@ -55,8 +55,6 @@ function Dashboard() {
 	}
 
 	useEffect(() => {
-		console.log('USER UID: ', user.uid)
-		console.log('SORT: ', sort)
 		if (!user.uid) {
 			return
 		}

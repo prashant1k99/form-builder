@@ -80,12 +80,16 @@ export const NumberFieldFormElement: FormElement = {
 			regex,
 		} = elementInstance.extraAttributes
 		if (required && currentValue == '') return 'This field is required'
-		if (regex && !new RegExp(regex).test(currentValue))
+		if (required && regex && !new RegExp(regex).test(currentValue))
 			return 'This field is invalid'
 		if (maxLetterCount && currentValue.length > parseInt(maxLetterCount)) {
 			return `This field can have a maximum of ${maxLetterCount} letters`
 		}
-		if (minLettersCount && currentValue.length < parseInt(minLettersCount)) {
+		if (
+			required &&
+			minLettersCount &&
+			currentValue.length < parseInt(minLettersCount)
+		) {
 			return `This field must have a minimum of ${minLettersCount} letters`
 		}
 		return true

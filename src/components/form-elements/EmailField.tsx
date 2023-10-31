@@ -78,7 +78,7 @@ export const EmailFieldFormElement: FormElement = {
 			regex,
 		} = elementInstance.extraAttributes
 		if (required && currentValue == '') return 'This field is required'
-		if (regex && !new RegExp(regex).test(currentValue))
+		if (required && regex && !new RegExp(regex).test(currentValue))
 			return 'This field is invalid'
 		if (maxLetterCount && currentValue.length > parseInt(maxLetterCount)) {
 			return `This field can have a maximum of ${maxLetterCount} letters`

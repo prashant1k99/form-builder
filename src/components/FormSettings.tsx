@@ -167,7 +167,7 @@ function FormSettings() {
 						if (property.isHidden) return null
 						return (
 							<FormField
-								key={property.label}
+								key={property.name}
 								control={formResolver.control}
 								name={
 									property.name as

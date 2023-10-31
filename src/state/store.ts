@@ -7,6 +7,7 @@ export const store = configureStore({
     forms: formsReducder,
     submissions: submissionReducer,
   },
+  devTools: true,
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

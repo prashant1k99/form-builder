@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import Forms from '@/data/forms'
 import { Form } from '@/types/forms'
 import Loader from '@/components/Loader'
 import { cn } from '@/lib/utils'
@@ -28,16 +27,31 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
-import { useAppSelector } from '@/hooks/reduxHooks'
+import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks'
+import { setOrUpdateActiveForm, updateForm, fetchForm } from '@/state/form'
+import { PiGearSixLight } from 'react-icons/pi'
+import {
+	Sheet,
+	SheetClose,
+	SheetContent,
+	SheetDescription,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet'
+import FormSettings from '@/components/FormSettings'
 
 const FormData = () => {
 	const { id } = useParams()
+	const dispatch = useAppDispatch()
 	const [searchParams, setSearchParams] = useSearchParams()
 	const landingFirst = searchParams.get('landingFirst') == 'true' ? true : false
 	const navigation = useNavigate()
 	const [isLoading, setIsLoading] = useState(true)
 	const [formData, setFormData] = useState<Form | null>(null)
 	const [isCopied, setIsCopied] = useState(false)
+	const [updatingForm, setUpdatingForm] = useState(false)
 
 	const dialogRef = useRef<HTMLElement>(null)
 
@@ -62,19 +76,73 @@ const FormData = () => {
 	const form = useAppSelector((state) =>
 		state.forms.forms.find((f) => f.id == id)
 	)
+
+	const activeForm = useAppSelector((state) => state.forms.activeForm)
+	const activeFormHasChanges = useAppSelector(
+		(state) => state.forms.activeFormHasChanges
+	)
+
+	const setActiveForm = (form: Form) => {
+		dispatch(setOrUpdateActiveForm(form))
+	}
+
 	useEffect(() => {
 		if (landingFirst) dialogRef.current?.click()
 	}, [landingFirst])
 
+	const updateFormSubmit = () => {
+		if (!form) return
+		setUpdatingForm(true)
+		dispatch(
+			updateForm({
+				formId: form.id,
+				form: form,
+			})
+		)
+			.then(() => {
+				setActiveForm(form)
+				toast({
+					title: 'Form updated.',
+					description: 'Your form has been updated.',
+				})
+			})
+			.catch((error: Error) => {
+				toast({
+					variant: 'destructive',
+					title: 'Uh oh! Something went wrong.',
+					description:
+						error instanceof Error
+							? error.message
+							: 'An unknown error occurred.',
+				})
+			})
+			.finally(() => {
+				setUpdatingForm(false)
+			})
+	}
+
 	useEffect(() => {
+		if (!activeForm) return
+		setFormData(activeForm)
+		setIsLoading(false)
+	}, [activeForm])
+
+	useEffect(() => {
+		debugger
 		if (form) {
-			setFormData(form)
+			setActiveForm(form)
 			setIsLoading(false)
 		}
 		if (!form) {
 			setIsLoading(true)
-			Forms.getFormById(id as string)
-				.then((form) => {
+			dispatch(
+				fetchForm({
+					formId: id as string,
+				})
+			)
+				.then((action) => {
+					const form = action.payload as Form
+					setActiveForm(form)
 					setFormData(form)
 					if (form.state !== 'published') {
 						navigation('/builder/' + id)
@@ -84,7 +152,7 @@ const FormData = () => {
 					console.error(error)
 					navigation('/not-found')
 				})
-				.finally(() => setIsLoading(false))
+			// .finally(() => setIsLoading(false))
 		}
 	}, [id])
 
@@ -109,6 +177,40 @@ const FormData = () => {
 							</p>
 						</div>
 						<div className="flex items-center flex-row-reverse md:flex-row w-full sm:w-fit md:justify-end">
+							<Sheet>
+								<SheetTrigger asChild>
+									<Button
+										variant={'secondary'}
+										className="w-full md:w-fit mr-2">
+										<PiGearSixLight className="w-4 h-4" />
+									</Button>
+								</SheetTrigger>
+								<SheetContent>
+									<SheetHeader>
+										<SheetTitle>Edit profile</SheetTitle>
+										<SheetDescription>
+											Make changes to your profile here. Click save when you're
+											done.
+										</SheetDescription>
+									</SheetHeader>
+									<div className="grid gap-4 py-4 w-full">
+										<FormSettings />
+									</div>
+									<SheetFooter>
+										<Button
+											disabled={!activeFormHasChanges || updatingForm}
+											onClick={(e) => {
+												e.preventDefault()
+												updateFormSubmit()
+											}}
+											className="w-full"
+											type="submit">
+											Update Form
+										</Button>
+										<SheetClose asChild></SheetClose>
+									</SheetFooter>
+								</SheetContent>
+							</Sheet>
 							<Link to={`/form/${id}`}>
 								<Button variant={'secondary'} className="w-full md:w-fit px-10">
 									<GoProjectSymlink className="w-6 h-6 mr-2" />
@@ -162,7 +264,7 @@ const FormData = () => {
 			<Dialog>
 				<DialogTrigger asChild>
 					<button ref={dialogRef} className="hidden">
-						Edit profile
+						Form Published
 					</button>
 				</DialogTrigger>
 				<DialogContent className="sm:max-w-[425px]">
