@@ -104,12 +104,18 @@ export default class Forms {
 	}
 
 	public static async updateForm(id: string, form: ModifyForm): Promise<Form> {
-		console.log('UPDATING FORM: ', id)
-		const docRef = doc(db, 'forms', id)
-		await updateDoc(docRef, {
-			...form,
-			updatedAt: serverTimestamp(),
-		})
+		console.log('UPDATING FORM: ', form)
+		try {
+			const docRef = doc(db, 'forms', id)
+			await updateDoc(docRef, {
+				...form,
+				updatedAt: serverTimestamp(),
+			})
+		} catch (error) {
+			debugger
+			console.log(error)
+		}
+		console.log('UPDATED FORM: ', id)
 		return {
 			...form,
 			fields: form.fields || [],

@@ -3,6 +3,7 @@ import { PiGearSix } from 'react-icons/pi'
 import { FormElements } from './FormElements'
 import SidebarBtnElement from './SidebarBtnElement'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import FormSettings from '../FormSettings'
 
 function FormElementSidebar() {
 	return (
@@ -36,7 +37,12 @@ function FormElementSidebar() {
 					<SidebarBtnElement formElement={FormElements.CheckBoxField} />
 				</div>
 			</TabsContent>
-			<TabsContent value="settings">Form Properties</TabsContent>
+			<TabsContent value="settings">
+				<p className="text-muted-foreground mb-2">Form Settings</p>
+				<div className="flex flex-col gap-2 items-center mb-4">
+					<FormSettings />
+				</div>
+			</TabsContent>
 		</Tabs>
 	)
 }

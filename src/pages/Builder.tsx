@@ -17,7 +17,10 @@ import Loader from '@/components/Loader'
 import FormSaveBtn from '@/components/FormBuilder/FormSaveBtn'
 import PublishBtn from '@/components/FormBuilder/PublishBtn'
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
-import { setActiveForm as setActiveFormInState, fetchForm } from '@/state/form'
+import {
+	setOrUpdateActiveForm as setOrUpdateActiveFormInState,
+	fetchForm,
+} from '@/state/form'
 import { Form } from '@/types/forms'
 
 function App() {
@@ -29,7 +32,8 @@ function App() {
 	const dispatch = useAppDispatch()
 
 	const forms = useAppSelector((state) => state.forms.forms)
-	const setActiveForm = (form: Form) => dispatch(setActiveFormInState(form))
+	const setOrUpdateActiveForm = (form: Form) =>
+		dispatch(setOrUpdateActiveFormInState(form))
 
 	useEffect(() => {
 		setLoading(true)
@@ -37,7 +41,7 @@ function App() {
 		const activeForm = forms.find((form) => form.id === id)
 		if (activeForm) {
 			setForm(activeForm)
-			setActiveForm(activeForm)
+			setOrUpdateActiveForm(activeForm)
 			setLoading(false)
 			return
 		} else {
@@ -49,7 +53,7 @@ function App() {
 				.then((action) => {
 					const form = action.payload as Form
 					if (!form) navigate(`/not-found`)
-					setActiveForm(form)
+					setOrUpdateActiveForm(form)
 					setForm(form)
 				})
 				.catch((error) => {

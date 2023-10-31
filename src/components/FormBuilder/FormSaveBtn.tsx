@@ -5,30 +5,42 @@ import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
 import { useState } from 'react'
 import { toast } from '../ui/use-toast'
 import { ToastAction } from '../ui/toast'
-import { updateFormElements } from '@/state/form'
+import {
+	updateFormElements,
+	updateActiveFormHasChanges,
+	updateForm,
+} from '@/state/form'
 import { ImSpinner2 } from 'react-icons/im'
 
 function FormSaveBtn() {
 	const [isSaving, setIsSaving] = useState(false)
 	const form = useAppSelector((state) => state.forms.activeForm)
+	const activeFormHasChanges =
+		useAppSelector((state) => state.forms.activeFormHasChanges) || false
 	const { elements } = useDesigner()
 	const dispatch = useAppDispatch()
+
+	const setFormChanges = (hasChanges: boolean) => {
+		dispatch(updateActiveFormHasChanges(hasChanges))
+	}
 
 	const saveForm = () => {
 		if (isSaving) return
 		if (!form) return
 		setIsSaving(true)
 
-		console.log(elements)
-
 		dispatch(
-			updateFormElements({
+			updateForm({
 				formId: form.id,
-				elements,
+				form: {
+					...form,
+					fields: elements,
+				},
 			})
 		)
 			.unwrap()
 			.then(() => {
+				setFormChanges(false)
 				toast({
 					title: 'Form saved.',
 					description: 'Your form has been saved.',
@@ -61,6 +73,7 @@ function FormSaveBtn() {
 
 	const hasAnyChanges = () => {
 		if (!form) return false
+		if (activeFormHasChanges) return true
 		if (JSON.stringify(form.fields) !== JSON.stringify(elements)) return true
 		return false
 	}

@@ -4,6 +4,7 @@ import Forms from '@/data/forms';
 import { FormElementInstance } from '@/components/FormBuilder/FormElements';
 
 type FormState = {
+  activeFormHasChanges?: boolean;
   activeForm?: Form;
   forms: Form[];
   lastForm: string | null;
@@ -13,6 +14,7 @@ type FormState = {
 }
 
 const initialState: FormState = {
+  activeFormHasChanges: false,
   activeForm: undefined,
   forms: [],
   lastForm: null,
@@ -71,6 +73,9 @@ export const formSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
+    updateActiveFormHasChanges: (state, action) => {
+      state.activeFormHasChanges = action.payload;
+    },
     updateForm: (state, action) => {
       const { data,
         limit,
@@ -79,7 +84,7 @@ export const formSlice = createSlice({
       state.lastForm = lastDoc
       state.limit = limit
     },
-    setActiveForm: (state, action) => {
+    setOrUpdateActiveForm: (state, action) => {
       state.activeForm = action.payload;
     },
     setForms: (state, action) => {
@@ -148,7 +153,8 @@ export const formSlice = createSlice({
 export const {
   setSort,
   setLimit,
-  setActiveForm
+  setOrUpdateActiveForm,
+  updateActiveFormHasChanges
 } = formSlice.actions;
 
 export default formSlice.reducer;
