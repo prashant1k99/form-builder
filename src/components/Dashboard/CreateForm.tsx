@@ -27,6 +27,7 @@ import { useNavigate } from 'react-router-dom'
 import useAuth from '@/hooks/useAuth'
 import { useAppDispatch } from '@/hooks/reduxHooks'
 import { createForm } from '@/state/form'
+import { useState } from 'react'
 
 const FormSchema = z.object({
 	name: z.string().min(2).max(50),
@@ -40,6 +41,7 @@ export default function CreateForm({
 }: {
 	children: React.ReactNode
 }) {
+	const [isCreating, setIsCreating] = useState(false)
 	const dispatch = useAppDispatch()
 
 	// const addForm = (forms: FormType[]) => dispatch(addForms(forms))
@@ -56,6 +58,8 @@ export default function CreateForm({
 	})
 
 	async function onSubmit(data: formSchemaType) {
+		debugger
+		setIsCreating(true)
 		try {
 			console.log('CREATING FORM: ', data)
 			const { name, description } = data
@@ -68,10 +72,14 @@ export default function CreateForm({
 						description,
 					},
 				})
-			).then((action) => {
-				const { id } = action.payload as { id: string }
-				navigate(`/builder/${id}`)
-			})
+			)
+				.then((action) => {
+					const { id } = action.payload as { id: string }
+					navigate(`/builder/${id}`)
+				})
+				.finally(() => {
+					setIsCreating(false)
+				})
 
 			// Navigate to the new form
 		} catch (error) {
@@ -92,6 +100,7 @@ export default function CreateForm({
 					</ToastAction>
 				),
 			})
+			setIsCreating(false)
 		}
 	}
 
@@ -159,12 +168,10 @@ export default function CreateForm({
 				<DialogFooter>
 					<Button
 						onClick={formSettings.handleSubmit(onSubmit)}
-						disabled={formSettings.formState.isSubmitting}
+						disabled={isCreating}
 						className="w-full mt-4">
-						{!formSettings.formState.isSubmitting && <span>Save</span>}
-						{formSettings.formState.isSubmitting && (
-							<ImSpinner2 className="animate-spin" />
-						)}
+						{isCreating && <ImSpinner2 className="animate-spin h-4 w-4" />}
+						{!isCreating && <span>Create Form</span>}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

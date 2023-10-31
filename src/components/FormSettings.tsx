@@ -21,6 +21,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from './ui/select'
+import { Button } from './ui/button'
+import { Separator } from './ui/separator'
+import FormDelete from './FormDelete'
+import { AiOutlineDelete } from 'react-icons/ai'
 
 const formSettingsSchema = z.object({
 	name: z.string().min(2).max(50),
@@ -39,33 +43,28 @@ function FormSettings() {
 	const form = useAppSelector((state) => state.forms.activeForm) as TForm
 	const dispatch = useAppDispatch()
 
-	const defaultValues = {
-		name: form.name,
-		description: form.description,
-		submitButtonText: form.extraConfig?.submitButton?.text || 'Submit',
-		submitButtonAction: form.extraConfig?.submitButton?.action || 'nothing',
-		submitButtonUrl: form.extraConfig?.submitButton?.url || '',
-		confirmationMessageText:
-			form.extraConfig?.confirmationMessage?.text ||
-			'Form submitted successfully',
-		confirmationMessageSubText:
-			form.extraConfig?.confirmationMessage?.subText ||
-			'Your form has been submitted successfully. Thank you for your time.',
-		postConfirmationRedirectUrl: form.extraConfig?.action?.url || '',
-	}
-
 	const formResolver = useForm<propertiesFormSettingsSchema>({
 		resolver: zodResolver(formSettingsSchema),
 		mode: 'onBlur',
-		defaultValues: defaultValues,
+		defaultValues: {},
 	})
 
 	useMemo(() => {
 		if (!form) return <div>No Form Selected</div>
-	}, [form])
-
-	useEffect(() => {
-		formResolver.reset(defaultValues)
+		formResolver.reset({
+			name: form.name,
+			description: form.description,
+			submitButtonText: form.extraConfig?.submitButton?.text || 'Submit',
+			submitButtonAction: form.extraConfig?.submitButton?.action || 'nothing',
+			submitButtonUrl: form.extraConfig?.submitButton?.url || '',
+			confirmationMessageText:
+				form.extraConfig?.confirmationMessage?.text ||
+				'Form submitted successfully',
+			confirmationMessageSubText:
+				form.extraConfig?.confirmationMessage?.subText ||
+				'Your form has been submitted successfully. Thank you for your time.',
+			postConfirmationRedirectUrl: form.extraConfig?.action?.url || '',
+		})
 	}, [form])
 
 	const applyChanges = (data: propertiesFormSettingsSchema) => {
@@ -157,62 +156,73 @@ function FormSettings() {
 	]
 
 	return (
-		<div className="w-full">
-			<Form {...formResolver}>
-				<form
-					onBlur={formResolver.handleSubmit(applyChanges)}
-					className="space-y-3"
-					onSubmit={(e) => e.preventDefault()}>
-					{formSettingProperties.map((property) => {
-						if (property.isHidden) return null
-						return (
-							<FormField
-								key={property.name}
-								control={formResolver.control}
-								name={
-									property.name as
-										| 'name'
-										| 'description'
-										| 'submitButtonText'
-										| 'submitButtonAction'
-										| 'submitButtonUrl'
-										| 'confirmationMessageText'
-										| 'confirmationMessageSubText'
-										| 'postConfirmationRedirectUrl'
-								}
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>
-											{property.label}
-											{property.required && (
-												<span className="text-red-500 pl-1">*</span>
+		<div className="w-full mb-4">
+			{form && (
+				<Form {...formResolver}>
+					<form
+						onBlur={formResolver.handleSubmit(applyChanges)}
+						className="space-y-3"
+						onSubmit={(e) => e.preventDefault()}>
+						{formSettingProperties.map((property) => {
+							if (property.isHidden) return null
+							return (
+								<FormField
+									key={property.name}
+									control={formResolver.control}
+									name={
+										property.name as
+											| 'name'
+											| 'description'
+											| 'submitButtonText'
+											| 'submitButtonAction'
+											| 'submitButtonUrl'
+											| 'confirmationMessageText'
+											| 'confirmationMessageSubText'
+											| 'postConfirmationRedirectUrl'
+									}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												{property.label}
+												{property.required && (
+													<span className="text-red-500 pl-1">*</span>
+												)}
+											</FormLabel>
+											<FormControl>
+												{property.input ? (
+													property.input({ ...field, name: property.name })
+												) : (
+													<Input
+														{...field}
+														required={property.required}
+														placeholder={property.label}
+														onKeyDown={(e) => {
+															if (e.key == 'Enter')
+																(e.target as HTMLInputElement).blur()
+														}}
+													/>
+												)}
+											</FormControl>
+											{property.description && (
+												<FormDescription>
+													{property.description}
+												</FormDescription>
 											)}
-										</FormLabel>
-										<FormControl>
-											{property.input ? (
-												property.input({ ...field, name: property.name })
-											) : (
-												<Input
-													{...field}
-													required={property.required}
-													placeholder={property.label}
-													onKeyDown={(e) => {
-														if (e.key == 'Enter')
-															(e.target as HTMLInputElement).blur()
-													}}
-												/>
-											)}
-										</FormControl>
-										{property.description && (
-											<FormDescription>{property.description}</FormDescription>
-										)}
-									</FormItem>
-								)}
-							/>
-						)
-					})}
-				</form>
-			</Form>
+										</FormItem>
+									)}
+								/>
+							)
+						})}
+						<Separator />
+						<FormDelete formId={form.id}>
+							<Button variant={'destructive'} className="w-full">
+								<AiOutlineDelete className="h-6 w-6 mr-2" />
+								Delete Form
+							</Button>
+						</FormDelete>
+					</form>
+				</Form>
+			)}
 		</div>
 	)
 }

@@ -112,7 +112,6 @@ export const formSlice = createSlice({
     }),
     builder.addCase(updateForm.fulfilled, (state, action) => {
       const data = action.payload;
-      debugger
       const existingDataIndex = state.forms.findIndex(form => form.id === data.id)
       if (existingDataIndex >= 0) {
         state.forms[existingDataIndex] = data
@@ -134,10 +133,10 @@ export const formSlice = createSlice({
     }),
     builder.addCase(deleteForm.fulfilled, (state, action) => {
       const { formId } = action.payload;
-      const existingDataIndex = state.forms.findIndex(form => form.id === formId)
-      state.forms.splice(existingDataIndex, 1);
+      state.forms = state.forms.filter(form => form.id !== formId);
       if (state.activeForm?.id === formId) {
         state.activeForm = undefined;
+        state.activeFormHasChanges = false;
       }
     })
   }
