@@ -1,4 +1,4 @@
-import { PiGearSixLight } from 'react-icons/pi'
+import { IoMdFunnel } from 'react-icons/io'
 import { Button } from '../ui/button'
 import SubmissionTable from './SubmissionTable'
 import Loader from '../Loader'
@@ -84,7 +84,7 @@ export default function FormSubmission({ id }: { id: string }) {
 				</div>
 				<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none flex flex-row gap-2">
 					<Button variant={'secondary'} className="w-full md:w-fit">
-						<PiGearSixLight className="w-4 h-4" />
+						<IoMdFunnel className="w-4 h-4" />
 					</Button>
 					<Button disabled variant={'secondary'} className="w-full md:w-fit">
 						Export

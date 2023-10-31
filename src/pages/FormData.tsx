@@ -46,6 +46,7 @@ import {
 	SheetTrigger,
 } from '@/components/ui/sheet'
 import FormSettings from '@/components/FormSettings'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const FormData = () => {
 	const { id } = useParams()
@@ -192,38 +193,42 @@ const FormData = () => {
 										<PiGearSixLight className="w-4 h-4" />
 									</Button>
 								</SheetTrigger>
-								<SheetContent>
-									<SheetHeader>
-										<SheetTitle>Edit Form</SheetTitle>
-										<SheetDescription>
-											Make changes to form here. Click Update Form when you're
-											done.
-										</SheetDescription>
-									</SheetHeader>
-									<div className="grid gap-4 py-4 w-full">
-										<FormSettings />
-									</div>
-									<SheetFooter>
-										<Button
-											disabled={updatingForm || !activeFormHasChanges}
-											onClick={(e) => {
-												e.preventDefault()
-												updateFormSubmit()
-											}}
-											className="w-full"
-											type="submit">
-											Update Form
-										</Button>
-										<SheetClose asChild>
-											<p
-												ref={
-													updateFormSheetRef as unknown as LegacyRef<HTMLParagraphElement>
-												}
-												className="hidden">
-												Close it
-											</p>
-										</SheetClose>
-									</SheetFooter>
+								<SheetContent className="overflow-y-auto p-0">
+									<ScrollArea className="h-full w-full p-4">
+										<div className="m-2">
+											<SheetHeader>
+												<SheetTitle>Edit Form</SheetTitle>
+												<SheetDescription>
+													Make changes to form here. Click Update Form when
+													you're done.
+												</SheetDescription>
+											</SheetHeader>
+											<div className="grid gap-4 py-4 w-full">
+												<FormSettings />
+											</div>
+											<SheetFooter>
+												<Button
+													disabled={updatingForm || !activeFormHasChanges}
+													onClick={(e) => {
+														e.preventDefault()
+														updateFormSubmit()
+													}}
+													className="w-full"
+													type="submit">
+													Update Form
+												</Button>
+												<SheetClose asChild>
+													<p
+														ref={
+															updateFormSheetRef as unknown as LegacyRef<HTMLParagraphElement>
+														}
+														className="hidden">
+														Close it
+													</p>
+												</SheetClose>
+											</SheetFooter>
+										</div>
+									</ScrollArea>
 								</SheetContent>
 							</Sheet>
 							<Link to={`/form/${id}`}>
