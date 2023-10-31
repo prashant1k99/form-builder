@@ -12,6 +12,7 @@ import { EmailFieldFormElement } from '../form-elements/EmailField'
 import { CheckBoxFieldFormElement } from '../form-elements/CheckBoxField'
 import { SelectFieldFormElement } from '../form-elements/SelectField'
 import { DateFieldFormElement } from '../form-elements/DateField'
+import { RadioGroupFieldFormElement } from '../form-elements/RadioGroupField'
 
 export type ElementsType =
 	| 'TextField'
@@ -26,6 +27,7 @@ export type ElementsType =
 	| 'CheckBoxField'
 	| 'SelectField'
 	| 'DateField'
+	| 'RadioGroupField'
 export type SubmitFunction = (key: string, value: string) => void
 
 export type FormElementInstance = {
@@ -81,4 +83,5 @@ export const FormElements: FormElementsType = {
 	CheckBoxField: CheckBoxFieldFormElement,
 	SelectField: SelectFieldFormElement,
 	DateField: DateFieldFormElement,
+	RadioGroupField: RadioGroupFieldFormElement,
 }

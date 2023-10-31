@@ -41,7 +41,7 @@ const extraAttributes = {
 	placeholder: 'Placeholder',
 	helperText: 'Helper Text',
 	required: false,
-	options: [],
+	options: [] as string[],
 }
 
 const propertiesSchema = z.object({
@@ -65,7 +65,7 @@ export const SelectFieldFormElement: FormElement = {
 
 	designerBtnElement: {
 		icon: RxDropdownMenu,
-		label: 'Text Field',
+		label: 'Select Field',
 	},
 
 	designerComponent: DesignerComponent,
@@ -80,8 +80,10 @@ export const SelectFieldFormElement: FormElement = {
 	): string | boolean => {
 		const elementInstance = element as CustomInstance
 
-		const { required } = elementInstance.extraAttributes
+		const { required, options } = elementInstance.extraAttributes
 		if (required && currentValue.length < 0) return 'This field is required'
+		if (required && !options.includes(currentValue))
+			return 'Incorrect value selected'
 		return true
 	},
 }
@@ -162,7 +164,7 @@ function PropertiesComponent({
 		{
 			label: 'Label',
 			description:
-				'The label of the text field. It will be displayed above field.',
+				'The label of the select field. It will be displayed above field.',
 			input: (field: ControllerRenderProps) => (
 				<Input
 					{...field}
@@ -176,12 +178,12 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Placeholder',
-			description: 'The placeholder of the text field.',
+			description: 'The placeholder of the select field.',
 			name: 'placeholder',
 		},
 		{
 			label: 'Helper Text',
-			description: 'The helper text of the text field.',
+			description: 'The helper text of the select field.',
 			name: 'helperText',
 		},
 	]
@@ -255,6 +257,7 @@ function PropertiesComponent({
 										<Button
 											variant={'ghost'}
 											size={'icon'}
+											disabled={field.value.length <= 1}
 											onClick={(e) => {
 												e.preventDefault()
 												const newOptions = [...field.value]

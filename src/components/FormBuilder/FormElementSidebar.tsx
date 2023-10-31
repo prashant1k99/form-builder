@@ -37,6 +37,7 @@ function FormElementSidebar() {
 					<SidebarBtnElement formElement={FormElements.CheckBoxField} />
 					<SidebarBtnElement formElement={FormElements.SelectField} />
 					<SidebarBtnElement formElement={FormElements.DateField} />
+					<SidebarBtnElement formElement={FormElements.RadioGroupField} />
 				</div>
 			</TabsContent>
 			<TabsContent value="settings">
