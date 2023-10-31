@@ -76,14 +76,6 @@ export const formSlice = createSlice({
     updateActiveFormHasChanges: (state, action) => {
       state.activeFormHasChanges = action.payload;
     },
-    updateForm: (state, action) => {
-      const { data,
-        limit,
-        lastDoc } = action.payload;
-      state.forms = [...state.forms, ...data];
-      state.lastForm = lastDoc
-      state.limit = limit
-    },
     setOrUpdateActiveForm: (state, action) => {
       state.activeForm = action.payload;
     },
@@ -120,6 +112,7 @@ export const formSlice = createSlice({
     }),
     builder.addCase(updateForm.fulfilled, (state, action) => {
       const data = action.payload;
+      debugger
       const existingDataIndex = state.forms.findIndex(form => form.id === data.id)
       if (existingDataIndex >= 0) {
         state.forms[existingDataIndex] = data

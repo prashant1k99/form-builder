@@ -32,8 +32,16 @@ function App() {
 	const dispatch = useAppDispatch()
 
 	const forms = useAppSelector((state) => state.forms.forms)
+	const activeForm = useAppSelector((state) => state.forms.activeForm)
 	const setOrUpdateActiveForm = (form: Form) =>
 		dispatch(setOrUpdateActiveFormInState(form))
+
+	useEffect(() => {
+		if (activeForm && activeForm.id === id) {
+			setForm(activeForm)
+			setLoading(false)
+		}
+	}, [activeForm])
 
 	useEffect(() => {
 		setLoading(true)
@@ -54,7 +62,6 @@ function App() {
 					const form = action.payload as Form
 					if (!form) navigate(`/not-found`)
 					setOrUpdateActiveForm(form)
-					setForm(form)
 				})
 				.catch((error) => {
 					console.error(error)
