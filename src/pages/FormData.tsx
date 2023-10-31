@@ -168,7 +168,7 @@ const FormData = () => {
 		<div className={cn('my-5', isLoading && 'h-full')}>
 			{isLoading && !formData && <Loader />}
 			{formData && (
-				<div className="flex flex-col max-w-[700px] w-full md:w-3/5 m-auto h-full p-5">
+				<div className="flex flex-col max-w-[700px] w-full md:w-3/5 md:m-auto h-full p-3">
 					<Alert variant={'default'} className="mb-6 border-branding">
 						<AiOutlineAlert className="h-4 w-4" />
 						<AlertTitle className="text-branding">Heads up!</AlertTitle>
@@ -184,16 +184,14 @@ const FormData = () => {
 								All of the data collected from your forms.
 							</p>
 						</div>
-						<div className="flex items-center flex-row-reverse md:flex-row w-full sm:w-fit md:justify-end">
+						<div className="flex items-center flex-row w-full sm:w-fit md:justify-end">
 							<Sheet>
 								<SheetTrigger asChild>
-									<Button
-										variant={'secondary'}
-										className="w-full md:w-fit mr-2">
+									<Button variant={'secondary'} className="w-2/5 md:w-fit mr-2">
 										<PiGearSixLight className="w-4 h-4" />
 									</Button>
 								</SheetTrigger>
-								<SheetContent className="overflow-y-auto p-0">
+								<SheetContent className="overflow-y-auto p-0 w-screen md:w-full">
 									<ScrollArea className="h-full w-full p-4">
 										<div className="m-2">
 											<SheetHeader>
@@ -231,7 +229,7 @@ const FormData = () => {
 									</ScrollArea>
 								</SheetContent>
 							</Sheet>
-							<Link to={`/form/${id}`}>
+							<Link className="w-full" to={`/form/${id}`}>
 								<Button variant={'secondary'} className="w-full md:w-fit px-10">
 									<GoProjectSymlink className="w-6 h-6 mr-2" />
 									Visit
@@ -256,7 +254,9 @@ const FormData = () => {
 								<Tooltip>
 									<TooltipTrigger>
 										<div className="ml-4 flex min-w-0 flex-1 gap-2">
-											<span className="truncate font-medium">{link}</span>
+											<span className="truncate font-medium w-2/3 sm:w-full text-ellipsis">
+												{link}
+											</span>
 										</div>
 									</TooltipTrigger>
 									<TooltipContent>
