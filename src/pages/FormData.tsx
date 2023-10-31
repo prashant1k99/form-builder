@@ -28,7 +28,12 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog'
 import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks'
-import { setOrUpdateActiveForm, updateForm, fetchForm } from '@/state/form'
+import {
+	setOrUpdateActiveForm,
+	updateForm,
+	fetchForm,
+	updateActiveFormHasChanges,
+} from '@/state/form'
 import { PiGearSixLight } from 'react-icons/pi'
 import {
 	Sheet,
@@ -54,6 +59,7 @@ const FormData = () => {
 	const [updatingForm, setUpdatingForm] = useState(false)
 
 	const dialogRef = useRef<HTMLLIElement>(null)
+	const updateFormSheetRef = useRef<HTMLLIElement>(null)
 
 	const link = window.location.origin + '/form/' + id
 
@@ -91,16 +97,19 @@ const FormData = () => {
 	}, [landingFirst])
 
 	const updateFormSubmit = () => {
-		if (!form) return
+		if (!formData) return
 		setUpdatingForm(true)
 		dispatch(
 			updateForm({
-				formId: form.id,
-				form: form,
+				formId: formData.id,
+				form: formData,
 			})
 		)
 			.then(() => {
-				setActiveForm(form)
+				if (updateFormSheetRef.current) {
+					updateFormSheetRef.current.click()
+				}
+				dispatch(updateActiveFormHasChanges(false))
 				toast({
 					title: 'Form updated.',
 					description: 'Your form has been updated.',
@@ -151,7 +160,6 @@ const FormData = () => {
 					console.error(error)
 					navigation('/not-found')
 				})
-			// .finally(() => setIsLoading(false))
 		}
 	}, [id])
 
@@ -186,9 +194,9 @@ const FormData = () => {
 								</SheetTrigger>
 								<SheetContent>
 									<SheetHeader>
-										<SheetTitle>Edit profile</SheetTitle>
+										<SheetTitle>Edit Form</SheetTitle>
 										<SheetDescription>
-											Make changes to your profile here. Click save when you're
+											Make changes to form here. Click Update Form when you're
 											done.
 										</SheetDescription>
 									</SheetHeader>
@@ -197,7 +205,7 @@ const FormData = () => {
 									</div>
 									<SheetFooter>
 										<Button
-											disabled={!activeFormHasChanges || updatingForm}
+											disabled={updatingForm || !activeFormHasChanges}
 											onClick={(e) => {
 												e.preventDefault()
 												updateFormSubmit()
@@ -206,7 +214,15 @@ const FormData = () => {
 											type="submit">
 											Update Form
 										</Button>
-										<SheetClose asChild></SheetClose>
+										<SheetClose asChild>
+											<p
+												ref={
+													updateFormSheetRef as unknown as LegacyRef<HTMLParagraphElement>
+												}
+												className="hidden">
+												Close it
+											</p>
+										</SheetClose>
 									</SheetFooter>
 								</SheetContent>
 							</Sheet>
