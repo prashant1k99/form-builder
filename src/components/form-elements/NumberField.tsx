@@ -1,4 +1,4 @@
-import { MdTextFields } from 'react-icons/md'
+import { GoNumber } from 'react-icons/go'
 import {
 	ElementsType,
 	FormElement,
@@ -24,10 +24,10 @@ import {
 import { Switch } from '../ui/switch'
 import { cn } from '@/lib/utils'
 
-const type: ElementsType = 'TextField'
+const type: ElementsType = 'NumberField'
 
 const extraAttributes = {
-	label: 'Text Field',
+	label: 'Number Field',
 	placeholder: 'Placeholder',
 	helperText: 'Helper Text',
 	required: false,
@@ -45,7 +45,7 @@ const propertiesSchema = z.object({
 	regex: z.string().max(100).optional(),
 })
 
-export const TextFieldFormElement: FormElement = {
+export const NumberFieldFormElement: FormElement = {
 	type,
 
 	construct: (id: string) => {
@@ -57,8 +57,8 @@ export const TextFieldFormElement: FormElement = {
 	},
 
 	designerBtnElement: {
-		icon: MdTextFields,
-		label: 'Text Field',
+		icon: GoNumber,
+		label: 'Number Field',
 	},
 
 	designerComponent: DesignerComponent,
@@ -183,7 +183,7 @@ function PropertiesComponent({
 		{
 			label: 'Label',
 			description:
-				'The label of the text field. It will be displayed above field.',
+				'The label of the number field. It will be displayed above field.',
 			input: (field: ControllerRenderProps) => (
 				<Input
 					{...field}
@@ -197,17 +197,17 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Placeholder',
-			description: 'The placeholder of the text field.',
+			description: 'The placeholder of the number field.',
 			name: 'placeholder',
 		},
 		{
 			label: 'Helper Text',
-			description: 'The helper text of the text field.',
+			description: 'The helper text of the number field.',
 			name: 'helperText',
 		},
 		{
 			label: 'Min Letters',
-			description: 'The minimum number of letters allowed in the text field.',
+			description: 'The minimum number of letters allowed in the number field.',
 			name: 'minLettersCount',
 			input: (field: ControllerRenderProps) => (
 				<Input
@@ -224,7 +224,7 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Max Letters',
-			description: 'The maximum number of letters allowed in the text field.',
+			description: 'The maximum number of letters allowed in the number field.',
 			name: 'maxLetterCount',
 			input: (field: ControllerRenderProps) => (
 				<Input
@@ -241,7 +241,7 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Regex Validation',
-			description: 'The regex validation of the text field.',
+			description: 'The regex validation of the number field.',
 			name: 'regex',
 		},
 	]
@@ -347,13 +347,17 @@ function FormComponent({
 			</Label>
 			<Input
 				className={cn(error && 'text-red-500 ring-2 ring-red-500')}
+				type="number"
 				onChange={(e) => setValue(e.target.value)}
 				placeholder={placeholder}
 				required={required}
 				onBlur={(e) => {
 					if (!submitValue) return
 
-					const isValid = TextFieldFormElement.validate(element, e.target.value)
+					const isValid = NumberFieldFormElement.validate(
+						element,
+						e.target.value
+					)
 					if (isValid == true) setError(false)
 					else setError(isValid)
 

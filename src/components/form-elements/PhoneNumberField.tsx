@@ -1,4 +1,4 @@
-import { MdTextFields } from 'react-icons/md'
+import { PiPhoneCallBold } from 'react-icons/pi'
 import {
 	ElementsType,
 	FormElement,
@@ -24,15 +24,15 @@ import {
 import { Switch } from '../ui/switch'
 import { cn } from '@/lib/utils'
 
-const type: ElementsType = 'TextField'
+const type: ElementsType = 'PhoneNumberField'
 
 const extraAttributes = {
-	label: 'Text Field',
+	label: 'Phone Number Field',
 	placeholder: 'Placeholder',
 	helperText: 'Helper Text',
 	required: false,
-	minLettersCount: '0',
-	maxLetterCount: '50',
+	maxLetterCount: '10',
+	regex: '^[0-9]{10}$',
 }
 
 const propertiesSchema = z.object({
@@ -40,12 +40,11 @@ const propertiesSchema = z.object({
 	placeholder: z.string().max(50),
 	helperText: z.string().max(100),
 	required: z.boolean().default(false),
-	minLettersCount: z.string().default('0'),
-	maxLetterCount: z.string().default('50'),
+	maxLetterCount: z.string().default('10'),
 	regex: z.string().max(100).optional(),
 })
 
-export const TextFieldFormElement: FormElement = {
+export const PhoneNumberFormElement: FormElement = {
 	type,
 
 	construct: (id: string) => {
@@ -57,8 +56,8 @@ export const TextFieldFormElement: FormElement = {
 	},
 
 	designerBtnElement: {
-		icon: MdTextFields,
-		label: 'Text Field',
+		icon: PiPhoneCallBold,
+		label: 'Phone Number Field',
 	},
 
 	designerComponent: DesignerComponent,
@@ -74,7 +73,6 @@ export const TextFieldFormElement: FormElement = {
 		const elementInstance = element as CustomInstance
 
 		const {
-			minLettersCount = '0',
 			maxLetterCount = '50',
 			required,
 			regex,
@@ -84,9 +82,6 @@ export const TextFieldFormElement: FormElement = {
 			return 'This field is invalid'
 		if (maxLetterCount && currentValue.length > parseInt(maxLetterCount)) {
 			return `This field can have a maximum of ${maxLetterCount} letters`
-		}
-		if (minLettersCount && currentValue.length < parseInt(minLettersCount)) {
-			return `This field must have a minimum of ${minLettersCount} letters`
 		}
 		return true
 	},
@@ -126,15 +121,8 @@ function PropertiesComponent({
 }) {
 	const element = elementInstance as CustomInstance
 	const { updateElement } = useDesigner()
-	const {
-		label,
-		helperText,
-		placeholder,
-		required,
-		minLettersCount,
-		maxLetterCount,
-		regex,
-	} = element.extraAttributes
+	const { label, helperText, placeholder, required, maxLetterCount, regex } =
+		element.extraAttributes
 
 	const form = useForm<propertiesFormSchemaType>({
 		resolver: zodResolver(propertiesSchema),
@@ -144,7 +132,6 @@ function PropertiesComponent({
 			placeholder,
 			helperText,
 			required,
-			minLettersCount,
 			maxLetterCount,
 			regex,
 		},
@@ -155,15 +142,8 @@ function PropertiesComponent({
 	}, [element, form])
 
 	function applyChanges(data: propertiesFormSchemaType) {
-		const {
-			label,
-			placeholder,
-			helperText,
-			required,
-			minLettersCount,
-			maxLetterCount,
-			regex,
-		} = data
+		const { label, placeholder, helperText, required, maxLetterCount, regex } =
+			data
 		console.log(data)
 		updateElement(element.id, {
 			...element,
@@ -172,7 +152,6 @@ function PropertiesComponent({
 				placeholder,
 				helperText,
 				required,
-				minLettersCount,
 				maxLetterCount,
 				regex,
 			},
@@ -183,7 +162,7 @@ function PropertiesComponent({
 		{
 			label: 'Label',
 			description:
-				'The label of the text field. It will be displayed above field.',
+				'The label of the Phone Number Field. It will be displayed above field.',
 			input: (field: ControllerRenderProps) => (
 				<Input
 					{...field}
@@ -197,34 +176,18 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Placeholder',
-			description: 'The placeholder of the text field.',
+			description: 'The placeholder of the Phone Number Field.',
 			name: 'placeholder',
 		},
 		{
 			label: 'Helper Text',
-			description: 'The helper text of the text field.',
+			description: 'The helper text of the Phone Number Field.',
 			name: 'helperText',
 		},
 		{
-			label: 'Min Letters',
-			description: 'The minimum number of letters allowed in the text field.',
-			name: 'minLettersCount',
-			input: (field: ControllerRenderProps) => (
-				<Input
-					{...field}
-					value={field.value || 0}
-					type="number"
-					min={0}
-					max={10}
-					onKeyDown={(e) => {
-						if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
-					}}
-				/>
-			),
-		},
-		{
 			label: 'Max Letters',
-			description: 'The maximum number of letters allowed in the text field.',
+			description:
+				'The maximum number of letters allowed in the Phone Number Field.',
 			name: 'maxLetterCount',
 			input: (field: ControllerRenderProps) => (
 				<Input
@@ -241,7 +204,7 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Regex Validation',
-			description: 'The regex validation of the text field.',
+			description: 'The regex validation of the Phone Number Field.',
 			name: 'regex',
 		},
 	]
@@ -262,9 +225,7 @@ function PropertiesComponent({
 									| 'label'
 									| 'placeholder'
 									| 'helperText'
-									| 'minLettersCount'
 									| 'maxLetterCount'
-									| 'regex'
 							}
 							render={({ field }) => (
 								<FormItem>
@@ -346,6 +307,7 @@ function FormComponent({
 				{required && <span className="text-red-500 pl-1">*</span>}
 			</Label>
 			<Input
+				type="tel"
 				className={cn(error && 'text-red-500 ring-2 ring-red-500')}
 				onChange={(e) => setValue(e.target.value)}
 				placeholder={placeholder}
@@ -353,7 +315,10 @@ function FormComponent({
 				onBlur={(e) => {
 					if (!submitValue) return
 
-					const isValid = TextFieldFormElement.validate(element, e.target.value)
+					const isValid = PhoneNumberFormElement.validate(
+						element,
+						e.target.value
+					)
 					if (isValid == true) setError(false)
 					else setError(isValid)
 

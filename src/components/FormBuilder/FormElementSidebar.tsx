@@ -30,6 +30,9 @@ function FormElementSidebar() {
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
 					<SidebarBtnElement formElement={FormElements.TextField} />
 					<SidebarBtnElement formElement={FormElements.TextArea} />
+					<SidebarBtnElement formElement={FormElements.NumberField} />
+					<SidebarBtnElement formElement={FormElements.PhoneNumberField} />
+					<SidebarBtnElement formElement={FormElements.EmailField} />
 				</div>
 			</TabsContent>
 			<TabsContent value="settings">Form Properties</TabsContent>

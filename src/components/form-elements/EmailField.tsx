@@ -1,4 +1,4 @@
-import { MdTextFields } from 'react-icons/md'
+import { MdOutlineAlternateEmail } from 'react-icons/md'
 import {
 	ElementsType,
 	FormElement,
@@ -24,15 +24,15 @@ import {
 import { Switch } from '../ui/switch'
 import { cn } from '@/lib/utils'
 
-const type: ElementsType = 'TextField'
+const type: ElementsType = 'EmailField'
 
 const extraAttributes = {
-	label: 'Text Field',
+	label: 'Email Field',
 	placeholder: 'Placeholder',
 	helperText: 'Helper Text',
 	required: false,
-	minLettersCount: '0',
 	maxLetterCount: '50',
+	regex: '^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$', // https://stackoverflow.com/a/46181/14900011
 }
 
 const propertiesSchema = z.object({
@@ -40,12 +40,11 @@ const propertiesSchema = z.object({
 	placeholder: z.string().max(50),
 	helperText: z.string().max(100),
 	required: z.boolean().default(false),
-	minLettersCount: z.string().default('0'),
 	maxLetterCount: z.string().default('50'),
 	regex: z.string().max(100).optional(),
 })
 
-export const TextFieldFormElement: FormElement = {
+export const EmailFieldFormElement: FormElement = {
 	type,
 
 	construct: (id: string) => {
@@ -57,8 +56,8 @@ export const TextFieldFormElement: FormElement = {
 	},
 
 	designerBtnElement: {
-		icon: MdTextFields,
-		label: 'Text Field',
+		icon: MdOutlineAlternateEmail,
+		label: 'Email Field',
 	},
 
 	designerComponent: DesignerComponent,
@@ -74,7 +73,6 @@ export const TextFieldFormElement: FormElement = {
 		const elementInstance = element as CustomInstance
 
 		const {
-			minLettersCount = '0',
 			maxLetterCount = '50',
 			required,
 			regex,
@@ -84,9 +82,6 @@ export const TextFieldFormElement: FormElement = {
 			return 'This field is invalid'
 		if (maxLetterCount && currentValue.length > parseInt(maxLetterCount)) {
 			return `This field can have a maximum of ${maxLetterCount} letters`
-		}
-		if (minLettersCount && currentValue.length < parseInt(minLettersCount)) {
-			return `This field must have a minimum of ${minLettersCount} letters`
 		}
 		return true
 	},
@@ -126,15 +121,8 @@ function PropertiesComponent({
 }) {
 	const element = elementInstance as CustomInstance
 	const { updateElement } = useDesigner()
-	const {
-		label,
-		helperText,
-		placeholder,
-		required,
-		minLettersCount,
-		maxLetterCount,
-		regex,
-	} = element.extraAttributes
+	const { label, helperText, placeholder, required, maxLetterCount, regex } =
+		element.extraAttributes
 
 	const form = useForm<propertiesFormSchemaType>({
 		resolver: zodResolver(propertiesSchema),
@@ -144,7 +132,6 @@ function PropertiesComponent({
 			placeholder,
 			helperText,
 			required,
-			minLettersCount,
 			maxLetterCount,
 			regex,
 		},
@@ -155,15 +142,8 @@ function PropertiesComponent({
 	}, [element, form])
 
 	function applyChanges(data: propertiesFormSchemaType) {
-		const {
-			label,
-			placeholder,
-			helperText,
-			required,
-			minLettersCount,
-			maxLetterCount,
-			regex,
-		} = data
+		const { label, placeholder, helperText, required, maxLetterCount, regex } =
+			data
 		console.log(data)
 		updateElement(element.id, {
 			...element,
@@ -172,7 +152,6 @@ function PropertiesComponent({
 				placeholder,
 				helperText,
 				required,
-				minLettersCount,
 				maxLetterCount,
 				regex,
 			},
@@ -183,7 +162,7 @@ function PropertiesComponent({
 		{
 			label: 'Label',
 			description:
-				'The label of the text field. It will be displayed above field.',
+				'The label of the email field. It will be displayed above field.',
 			input: (field: ControllerRenderProps) => (
 				<Input
 					{...field}
@@ -197,34 +176,17 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Placeholder',
-			description: 'The placeholder of the text field.',
+			description: 'The placeholder of the email field.',
 			name: 'placeholder',
 		},
 		{
 			label: 'Helper Text',
-			description: 'The helper text of the text field.',
+			description: 'The helper text of the email field.',
 			name: 'helperText',
 		},
 		{
-			label: 'Min Letters',
-			description: 'The minimum number of letters allowed in the text field.',
-			name: 'minLettersCount',
-			input: (field: ControllerRenderProps) => (
-				<Input
-					{...field}
-					value={field.value || 0}
-					type="number"
-					min={0}
-					max={10}
-					onKeyDown={(e) => {
-						if (e.key == 'Enter') (e.target as HTMLInputElement).blur()
-					}}
-				/>
-			),
-		},
-		{
 			label: 'Max Letters',
-			description: 'The maximum number of letters allowed in the text field.',
+			description: 'The maximum number of letters allowed in the email field.',
 			name: 'maxLetterCount',
 			input: (field: ControllerRenderProps) => (
 				<Input
@@ -241,7 +203,7 @@ function PropertiesComponent({
 		},
 		{
 			label: 'Regex Validation',
-			description: 'The regex validation of the text field.',
+			description: 'The regex validation of the email field.',
 			name: 'regex',
 		},
 	]
@@ -262,7 +224,6 @@ function PropertiesComponent({
 									| 'label'
 									| 'placeholder'
 									| 'helperText'
-									| 'minLettersCount'
 									| 'maxLetterCount'
 									| 'regex'
 							}
@@ -353,7 +314,10 @@ function FormComponent({
 				onBlur={(e) => {
 					if (!submitValue) return
 
-					const isValid = TextFieldFormElement.validate(element, e.target.value)
+					const isValid = EmailFieldFormElement.validate(
+						element,
+						e.target.value
+					)
 					if (isValid == true) setError(false)
 					else setError(isValid)
 

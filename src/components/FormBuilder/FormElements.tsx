@@ -6,6 +6,9 @@ import { SubTitleFieldFormElement } from '../form-elements/SubTitle'
 import { ParagraphFormElement } from '../form-elements/Paragraph'
 import { SeparatorFormElement } from '../form-elements/Separator'
 import { TextAreaFormElement } from '../form-elements/TextArea'
+import { PhoneNumberFormElement } from '../form-elements/PhoneNumberField'
+import { NumberFieldFormElement } from '../form-elements/NumberField'
+import { EmailFieldFormElement } from '../form-elements/EmailField'
 
 export type ElementsType =
 	| 'TextField'
@@ -14,6 +17,9 @@ export type ElementsType =
 	| 'Paragraph'
 	| 'Separator'
 	| 'TextArea'
+	| 'PhoneNumberField'
+	| 'NumberField'
+	| 'EmailField'
 export type SubmitFunction = (key: string, value: string) => void
 
 export type FormElementInstance = {
@@ -63,4 +69,7 @@ export const FormElements: FormElementsType = {
 	Paragraph: ParagraphFormElement,
 	Separator: SeparatorFormElement,
 	TextArea: TextAreaFormElement,
+	PhoneNumberField: PhoneNumberFormElement,
+	NumberField: NumberFieldFormElement,
+	EmailField: EmailFieldFormElement,
 }
