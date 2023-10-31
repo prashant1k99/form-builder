@@ -10,6 +10,8 @@ import { PhoneNumberFormElement } from '../form-elements/PhoneNumberField'
 import { NumberFieldFormElement } from '../form-elements/NumberField'
 import { EmailFieldFormElement } from '../form-elements/EmailField'
 import { CheckBoxFieldFormElement } from '../form-elements/CheckBoxField'
+import { SelectFieldFormElement } from '../form-elements/SelectField'
+import { DateFieldFormElement } from '../form-elements/DateField'
 
 export type ElementsType =
 	| 'TextField'
@@ -22,6 +24,8 @@ export type ElementsType =
 	| 'NumberField'
 	| 'EmailField'
 	| 'CheckBoxField'
+	| 'SelectField'
+	| 'DateField'
 export type SubmitFunction = (key: string, value: string) => void
 
 export type FormElementInstance = {
@@ -75,4 +79,6 @@ export const FormElements: FormElementsType = {
 	NumberField: NumberFieldFormElement,
 	EmailField: EmailFieldFormElement,
 	CheckBoxField: CheckBoxFieldFormElement,
+	SelectField: SelectFieldFormElement,
+	DateField: DateFieldFormElement,
 }

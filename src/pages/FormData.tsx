@@ -128,7 +128,6 @@ const FormData = () => {
 	}, [activeForm])
 
 	useEffect(() => {
-		debugger
 		if (form) {
 			setActiveForm(form)
 			setIsLoading(false)
