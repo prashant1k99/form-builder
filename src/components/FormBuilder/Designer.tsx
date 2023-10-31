@@ -213,9 +213,9 @@ function Designer() {
 	})
 
 	return (
-		<div className="flex flex-col sm:flex-row w-full h-full">
+		<div className="flex flex-col sm:flex-row w-full h-full overflow-y-hidden">
 			<div
-				className="p-4 w-full"
+				className="p-4 w-full h-full sm:min-h-1/2 overflow-y-auto"
 				onClick={(e) => {
 					e.stopPropagation()
 					if (selectedElement) setSelectedElement(null)

@@ -20,7 +20,7 @@ function FormElementSidebar() {
 			</TabsList>
 			<TabsContent value="elements">
 				<p className="text-muted-foreground mb-2">Layout Elements</p>
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+				<div className="grid grid-cols-2 gap-2 items-center">
 					<SidebarBtnElement formElement={FormElements.TitleField} />
 					<SidebarBtnElement formElement={FormElements.SubTitleField} />
 					<SidebarBtnElement formElement={FormElements.Paragraph} />
@@ -28,7 +28,7 @@ function FormElementSidebar() {
 				</div>
 				<br />
 				<p className="text-muted-foreground mb-2">Form Elements</p>
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+				<div className="grid grid-cols-2 gap-2 items-center">
 					<SidebarBtnElement formElement={FormElements.TextField} />
 					<SidebarBtnElement formElement={FormElements.TextArea} />
 					<SidebarBtnElement formElement={FormElements.NumberField} />
@@ -40,9 +40,9 @@ function FormElementSidebar() {
 					<SidebarBtnElement formElement={FormElements.RadioGroupField} />
 				</div>
 			</TabsContent>
-			<TabsContent value="settings">
-				<p className="text-muted-foreground mb-2">Form Settings</p>
-				<div className="flex flex-col gap-2 items-center mb-4">
+			<TabsContent className="w-full" value="settings">
+				<p className="text-muted-foreground mb-2 w-full">Form Settings</p>
+				<div className="flex flex-col gap-2 items-center mb-4 w-full">
 					<FormSettings />
 				</div>
 			</TabsContent>
