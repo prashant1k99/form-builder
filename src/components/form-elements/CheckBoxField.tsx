@@ -94,7 +94,7 @@ function DesignerComponent({
 			<div className="flex items-top space-x-2">
 				<Checkbox id={id} />
 				<div className="grid gap-1.5 leading-none">
-					<Label htmlFor={id}>
+					<Label className="text-muted-foreground" htmlFor={id}>
 						{label}
 						{required && '*'}
 					</Label>
