@@ -1,4 +1,3 @@
-import { ScrollArea } from '../ui/scroll-area'
 import FormElementSidebar from './FormElementSidebar'
 import PropertiesFormSidebar from './PropertiesFormSidebar'
 import useDesigner from '@/hooks/useDesigner'

@@ -33,6 +33,7 @@ function FormElementSidebar() {
 					<SidebarBtnElement formElement={FormElements.NumberField} />
 					<SidebarBtnElement formElement={FormElements.PhoneNumberField} />
 					<SidebarBtnElement formElement={FormElements.EmailField} />
+					<SidebarBtnElement formElement={FormElements.CheckBoxField} />
 				</div>
 			</TabsContent>
 			<TabsContent value="settings">Form Properties</TabsContent>
