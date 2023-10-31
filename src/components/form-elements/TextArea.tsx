@@ -98,7 +98,7 @@ function DesignerComponent({
 	const element = elementInstance as CustomInstance
 	const { label, helperText, placeholder, required } = element.extraAttributes
 	return (
-		<div className="flex flex-col gap-2 w-full">
+		<div className="flex flex-col gap-2 w-full my-2">
 			<Label className="text-muted-foreground">
 				{label}
 				{required && <span className="text-red-500 pl-1">*</span>}

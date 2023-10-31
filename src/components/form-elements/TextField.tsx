@@ -42,6 +42,7 @@ const propertiesSchema = z.object({
 	required: z.boolean().default(false),
 	minLettersCount: z.string().default('0'),
 	maxLetterCount: z.string().default('50'),
+	regex: z.string().max(100).optional(),
 })
 
 export const TextFieldFormElement: FormElement = {
@@ -78,6 +79,8 @@ export const TextFieldFormElement: FormElement = {
 			required,
 		} = elementInstance.extraAttributes
 		if (required && currentValue == '') return 'This field is required'
+		if (regex && !new RegExp(regex).test(currentValue))
+			return 'This field is invalid'
 		if (maxLetterCount && currentValue.length > parseInt(maxLetterCount)) {
 			return `This field can have a maximum of ${maxLetterCount} letters`
 		}
@@ -129,6 +132,7 @@ function PropertiesComponent({
 		required,
 		minLettersCount,
 		maxLetterCount,
+		regex,
 	} = element.extraAttributes
 
 	const form = useForm<propertiesFormSchemaType>({
@@ -141,6 +145,7 @@ function PropertiesComponent({
 			required,
 			minLettersCount,
 			maxLetterCount,
+			regex,
 		},
 	})
 
@@ -156,6 +161,7 @@ function PropertiesComponent({
 			required,
 			minLettersCount,
 			maxLetterCount,
+			regex,
 		} = data
 		console.log(data)
 		updateElement(element.id, {
@@ -167,6 +173,7 @@ function PropertiesComponent({
 				required,
 				minLettersCount,
 				maxLetterCount,
+				regex,
 			},
 		})
 	}
@@ -230,6 +237,11 @@ function PropertiesComponent({
 					}}
 				/>
 			),
+		},
+		{
+			label: 'Regex Validation',
+			description: 'The regex validation of the text field.',
+			name: 'regex',
 		},
 	]
 
