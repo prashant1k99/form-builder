@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
 	DragEndEvent,
 	useDndMonitor,
@@ -12,7 +12,6 @@ import { ElementsType, FormElementInstance, FormElements } from './FormElements'
 import idGenerator from '@/lib/idGenderator'
 import { Button } from '../ui/button'
 import { MdDelete } from 'react-icons/md'
-import { useAppSelector } from '@/hooks/reduxHooks'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
@@ -112,7 +111,6 @@ function Designer() {
 		selectedElement,
 		setSelectedElement,
 		removeElement,
-		loadElements,
 	} = useDesigner()
 
 	const droppable = useDroppable({
@@ -121,12 +119,6 @@ function Designer() {
 			isDesignerDropArea: true,
 		},
 	})
-
-	const form = useAppSelector((state) => state.forms.activeForm)
-
-	useEffect(() => {
-		loadElements(form?.fields || [])
-	}, [form])
 
 	useDndMonitor({
 		onDragEnd: (event: DragEndEvent) => {
