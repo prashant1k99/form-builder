@@ -1,5 +1,7 @@
 import PreviewDialogBtn from '@/components/FormBuilder/PreviewDialogBtn'
 import ThemeSwitcher from './ThemeSwitcher'
+import { Button } from './ui/button'
+import { LuGithub } from 'react-icons/lu'
 
 function NavBar() {
 	return (
@@ -13,6 +15,13 @@ function NavBar() {
 				<div className="flex items-center gap-4">
 					<PreviewDialogBtn />
 					<ThemeSwitcher />
+					<a
+						href="https://github.com/prashant1k99/form-builder"
+						target="_blank">
+						<Button variant={'outline'} size={'icon'}>
+							<LuGithub className="h-[1.2rem] w-[1.2rem]" />
+						</Button>
+					</a>
 				</div>
 			</div>
 		</nav>
